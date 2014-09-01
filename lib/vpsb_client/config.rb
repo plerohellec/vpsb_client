@@ -1,14 +1,18 @@
+require 'yaml'
+
 module VpsbClient
   class Config
-    attr_reader :application_name, :hoster_name, :plan_name
-
     def initialize(path)
       raise ArgumentError, "Can't find #{path}" unless File.exist?(path)
       @yml = YAML.load_file(path)
     end
 
     def value(name)
-      @yam.fetch(name)
+      @yml.fetch(name)
+    end
+
+    def [](name)
+      value(name)
     end
   end
 end
