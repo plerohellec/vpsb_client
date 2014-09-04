@@ -59,9 +59,9 @@ module Request
     def run
       case method
       when :get
-	then http_client.get(url, query_params)
-      when :post
-	then http_client.post(url, query_params, post_params)
+      then http_client.get(url, query_params)
+          when :post
+      then http_client.post(url, query_params, post_params)
       end
     end
   end

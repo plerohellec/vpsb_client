@@ -18,6 +18,9 @@ module VpsbClient
           plan_id: @plan_id
         }
       end
+
+      def self.trial_id(http_response)
+      end
     end
   end
 end
