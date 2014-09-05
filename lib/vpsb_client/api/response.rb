@@ -1,6 +1,6 @@
 module VpsbClient
   module Api
-    class HttpResponse
+    class Response
       attr_reader :code, :body_str, :content_type
 
       def initialize(curl_response)
