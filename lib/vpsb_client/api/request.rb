@@ -1,5 +1,5 @@
 module VpsbClient
-  module Request
+  module Api
     class Request
       def initialize(http_client)
         @http_client = http_client

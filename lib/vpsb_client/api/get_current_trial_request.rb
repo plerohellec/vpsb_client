@@ -1,6 +1,6 @@
 module VpsbClient
-  module Request
-    class GetCurrentTrial < GetRequest
+  module Api
+    class GetCurrentTrialRequest < GetRequest
       def initialize(http_client, application_id, plan_id, hoster_id)
         super(http_client)
         @application_id = application_id
