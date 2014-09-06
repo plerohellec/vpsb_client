@@ -3,6 +3,7 @@ vpsb_base = File.expand_path('..',  __FILE__)
 require "#{vpsb_base}/vpsb_client/version"
 require "#{vpsb_base}/vpsb_client/config"
 require "#{vpsb_base}/vpsb_client/http_client"
+require "#{vpsb_base}/vpsb_client/curl_wrapper"
 require "#{vpsb_base}/vpsb_client/manager"
 require "#{vpsb_base}/vpsb_client/api/request"
 require "#{vpsb_base}/vpsb_client/api/response"

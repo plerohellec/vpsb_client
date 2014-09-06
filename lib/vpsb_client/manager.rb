@@ -8,7 +8,8 @@ module VpsbClient
 
     def setup
       @config = Config.new(@config_path)
-      @http_client = HttpClient.new(@config['protocol'], @config['hostname'], @config['cookie_jar_path'])
+      @curl_wrapper = CurlWrapper.new(@config['cookie_jar_path'])
+      @http_client = HttpClient.new(@curl_wrapper, @config['protocol'], @config['hostname'])
     end
 
     def signin
