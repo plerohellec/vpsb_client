@@ -1,5 +1,3 @@
-require 'curb'
-
 module VpsbClient
   class HttpClient
     def initialize(curl_wrapper, protocol, hostname)
@@ -20,7 +18,7 @@ module VpsbClient
     private
 
     def url(request)
-      query_string = encode(request.query_params)
+      query_string = url_encode(request.query_params)
       "#{@protocol}://#{@hostname}#{request.url_path}#{suffix(request)}#{query_sep(query_string)}#{query_string}"
     end
 
