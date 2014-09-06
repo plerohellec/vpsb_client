@@ -1,3 +1,5 @@
+require 'curb'
+
 module VpsbClient
   class HttpClient
     def initialize(protocol, hostname, cookie_jar_path)
@@ -8,27 +10,34 @@ module VpsbClient
 
     def get(request)
       resp = get_with_cookie_jar(request)
-      HttpResponse.new(resp)
     end
 
-    def post(request, csrf_token)
+    def post(request, csrf_token = nil)
       resp = post_with_cookie_jar(request, csrf_token)
-      HttpResponse.new(resp)
     end
 
     private
 
     def url(request)
-      "#{@protocol}://#{@hostname}#{request.url_path}/#{request.query_params.to_query}"
+      query_string = encode(request.query_params)
+      "#{@protocol}://#{@hostname}#{request.url_path}#{suffix(request)}#{query_sep(query_string)}#{query_string}"
     end
 
-    def post_params(request, csrf_token)
+    def query_sep(query_string)
+      query_string.empty? ? '' : '?'
+    end
+
+    def suffix(request)
+      '.json' if request.accept == 'application/json'
+    end
+
+    def post_params(request, csrf_token = nil)
       post_params = request.post_params
-      post_params[:authenticity_token] = csrf_token
-      if request.content_type = 'application/json'
+      post_params[:authenticity_token] = csrf_token if csrf_token
+      if request.content_type == 'application/json'
         JSON.encode(post_params)
       else
-        post_params.to_query
+        encode(post_params)
       end
     end
 
@@ -56,5 +65,18 @@ module VpsbClient
         yield curl if block_given?
       end
     end
+
+    def encode(params)
+      return '' if params.empty?
+      s = ''
+      i = 0
+      params.each do |k,v|
+        s << '&' unless i==0
+        s << "#{ERB::Util.url_encode(k)}=#{ERB::Util.url_encode(v)}"
+        i += 1
+      end
+      s
+    end
+
   end
 end

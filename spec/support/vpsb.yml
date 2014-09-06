@@ -1,4 +1,5 @@
 application_name: uupdates
 plan_name: 1GB $10
 hoster_name: linode
+vpsb_protocol: https
 vpsb_host: localhost

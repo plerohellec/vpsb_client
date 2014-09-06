@@ -6,11 +6,15 @@ module VpsbClient
       end
 
       def query_params
-        raise NotImplemented
+        {}
       end
 
       def post_params
-        raise NotImplemented
+        {}
+      end
+
+      def accept
+        'application/json'
       end
     end
 
@@ -21,8 +25,17 @@ module VpsbClient
     end
 
     class PostRequest < Request
+      def initialize(http_client, csrf_token)
+        super(http_client)
+        @csrf_token = csrf_token
+      end
+
       def run
-        @http_client.post(self)
+        @http_client.post(self, @csrf_token)
+      end
+
+      def content_type
+        'application/x-www-form-urlencoded'
       end
     end
   end
