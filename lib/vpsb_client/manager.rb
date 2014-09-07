@@ -39,5 +39,12 @@ module VpsbClient
       curl_response = get_csrf_request.run
       @csrf_token = Api::GetCsrfTokenRequest.csrf_token(curl_response)
     end
+
+    def create_trial
+      builder = TrialBuilder.new(@config)
+      create_trial_request = Api::CreateTrialRequest.new(@http_client, builder.params)
+      curl_response = create_trial_request.run
+      http_response = Api::Response.new(curl_response)
+    end
   end
 end
