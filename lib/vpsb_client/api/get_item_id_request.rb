@@ -14,7 +14,19 @@ module VpsbClient
       end
 
       def self.item_id(http_response)
-        http_response.parsed_response['id']
+        return nil unless http_response.parsed_response.any?
+        http_response.parsed_response.first['id']
+      end
+    end
+
+    class GetPlanIdRequest < GetItemIdRequest
+      def initialize(http_client, hoster_id, plan_name)
+        super(http_client, 'plans', plan_name)
+        @hoster_id = hoster_id
+      end
+
+      def query_params
+        { hoster_id: @hoster_id }
       end
     end
   end

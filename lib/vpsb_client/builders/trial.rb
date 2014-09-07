@@ -31,6 +31,10 @@ module VpsbClient
         memory_parser.parse
         trial_params[:free_memory_mb] = memory_parser.free
 
+        uname_parser = SystemInfoParser::UnameParser.new
+        uname_parser.parse
+        trial_params[:kernel] = uname_parser.kernel
+
         post_params[:trial] = trial_params
         post_params
       end

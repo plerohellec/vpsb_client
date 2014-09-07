@@ -46,5 +46,26 @@ module VpsbClient
       curl_response = create_trial_request.run
       http_response = Api::Response.new(curl_response)
     end
+
+    def hoster_id
+      return @hoster_id if @hoster_id
+      id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', @config['hoster_name'])
+      http_response = Api::Response.new(id_request.run)
+      @hoster_id = Api::GetItemIdRequest.item_id(http_response)
+    end
+
+    def application_id
+      return @application_id if @application_id
+      id_request = Api::GetItemIdRequest.new(@http_client, 'applications', @config['application_name'])
+      http_response = Api::Response.new(id_request.run)
+      @application_id = Api::GetItemIdRequest.item_id(http_response)
+    end
+
+    def plan_id
+      return @plan_id if @plan_id
+      id_request = Api::GetPlanIdRequest.new(@http_client, hoster_id, @config['plan_name'])
+      http_response = Api::Response.new(id_request.run)
+      @plan_id = Api::GetPlanIdRequest.item_id(http_response)
+    end
   end
 end
