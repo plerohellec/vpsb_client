@@ -25,6 +25,20 @@ module VpsbClient
         req = GetItemIdRequest.new(client, 'hosters', 'linode')
         req.run
       end
+
+      it 'parses the response from the server' do
+        curl = double('curl')
+        client = HttpClient.new(curl, 'http', 'localhost')
+
+        curl_response = double('response')
+        allow(curl_response).to receive(:response_code).and_return(200)
+        allow(curl_response).to receive(:body_str).and_return('{"id": 25}')
+        allow(curl_response).to receive(:content_type).and_return("application/json")
+        allow(curl).to receive(:get).and_return(curl_response)
+        req = GetItemIdRequest.new(client, 'hosters', 'linode')
+        resp = Response.new(req.run)
+        expect(GetItemIdRequest.item_id(resp)).to eq(25)
+      end
     end
 
   end

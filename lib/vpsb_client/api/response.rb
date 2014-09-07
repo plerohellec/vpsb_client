@@ -1,3 +1,5 @@
+require 'json'
+
 module VpsbClient
   module Api
     class Response
@@ -16,7 +18,7 @@ module VpsbClient
       end
 
       def parsed_response
-        @parsed_response ||= JSON.decode(@body_str)
+        @parsed_response ||= JSON.parse(@body_str)
       end
 
       def success?
