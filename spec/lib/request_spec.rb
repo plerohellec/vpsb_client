@@ -32,7 +32,7 @@ module VpsbClient
 
         curl_response = double('response')
         allow(curl_response).to receive(:response_code).and_return(200)
-        allow(curl_response).to receive(:body_str).and_return('{"id": 25}')
+        allow(curl_response).to receive(:body_str).and_return('[{"id": 25}]')
         allow(curl_response).to receive(:content_type).and_return("application/json")
         allow(curl).to receive(:get).and_return(curl_response)
         req = GetItemIdRequest.new(client, 'hosters', 'linode')

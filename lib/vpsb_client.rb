@@ -13,6 +13,7 @@ require "#{vpsb_base}/vpsb_client/api/get_csrf_token_request"
 require "#{vpsb_base}/vpsb_client/api/signin_request"
 require "#{vpsb_base}/vpsb_client/api/create_trial_request"
 require "#{vpsb_base}/vpsb_client/builders/system_info_parser"
+require "#{vpsb_base}/vpsb_client/builders/trial"
 
 module VpsbClient
 end

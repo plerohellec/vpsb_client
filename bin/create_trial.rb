@@ -7,4 +7,4 @@ manager.setup
 
 puts "csrf token=#{manager.csrf_token}"
 
-manager.create_trial
+puts manager.create_trial

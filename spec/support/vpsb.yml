@@ -3,3 +3,6 @@ plan_name: 1GB $10
 hoster_name: linode
 vpsb_protocol: https
 vpsb_host: localhost
+comment: just a test
+cookie_jar_path: /tmp/curl_cookie_jar
+email: test@test.com

@@ -34,7 +34,7 @@ module VpsbClient
       post_params = request.post_params
       post_params[:authenticity_token] = csrf_token if csrf_token
       if request.content_type == 'application/json'
-        JSON.encode(post_params)
+        JSON.generate(post_params)
       else
         url_encode(post_params)
       end

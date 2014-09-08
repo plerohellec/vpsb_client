@@ -1,12 +1,13 @@
 module VpsbClient
   module Api
     class GetCsrfTokenRequest < GetRequest
-      def initialize(http_client)
+      def initialize(http_client, url_path)
         super(http_client)
+        @url_path = url_path
       end
 
       def url_path
-        "/users/sign_in"
+        @url_path
       end
 
       def accept
@@ -17,6 +18,8 @@ module VpsbClient
         regex = /<meta content=\"(?<token>[^\"]+)" name="csrf-token" \/>/
         if match_data = http_response.body_str.match(regex)
           match_data[:token]
+        else
+          raise RuntimeError, "CSRF token not found"
         end
       end
     end

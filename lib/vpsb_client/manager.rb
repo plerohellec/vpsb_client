@@ -35,16 +35,19 @@ module VpsbClient
 
     def csrf_token
       return @csrf_token if @csrf_token
-      get_csrf_request = Api::GetCsrfTokenRequest.new(@http_client)
+      url_path = signed_in? ? '/admin/plans' : '/users/sign_in'
+
+      get_csrf_request = Api::GetCsrfTokenRequest.new(@http_client, url_path)
       curl_response = get_csrf_request.run
       @csrf_token = Api::GetCsrfTokenRequest.csrf_token(curl_response)
     end
 
     def create_trial
-      builder = TrialBuilder.new(@config)
-      create_trial_request = Api::CreateTrialRequest.new(@http_client, builder.params)
+      builder = Builders::Trial.new(hoster_id, application_id, plan_id, @config['comment'])
+      create_trial_request = Api::CreateTrialRequest.new(@http_client, builder.params, csrf_token)
       curl_response = create_trial_request.run
       http_response = Api::Response.new(curl_response)
+      Api::CreateTrialRequest.trial_id(http_response)
     end
 
     def hoster_id

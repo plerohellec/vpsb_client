@@ -22,7 +22,7 @@ module VpsbClient
       end
 
       def success?
-        [200, 302].include?(@code)
+        [200, 201, 302].include?(@code)
       end
     end
   end
