@@ -46,7 +46,7 @@ module VpsbClient
         curl = double('curl')
         client = HttpClient.new(curl, 'http', 'localhost')
         expect(curl).to receive(:post).with('http://localhost/users/sign_in',
-                                           "user%5Bemail%5D=foo%40bar.com&user%5Bpassword%5D=foobar&authenticity_token=xyz",
+                                           {"user[email]"=>"foo@bar.com", "user[password]"=>"foobar", :authenticity_token=>"xyz"},
                                            "application/x-www-form-urlencoded").once
 
         req = SigninRequest.new(client, 'foo@bar.com', 'foobar', 'xyz')

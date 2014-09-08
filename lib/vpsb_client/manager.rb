@@ -54,21 +54,27 @@ module VpsbClient
       return @hoster_id if @hoster_id
       id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', @config['hoster_name'])
       http_response = Api::Response.new(id_request.run)
-      @hoster_id = Api::GetItemIdRequest.item_id(http_response)
+      id = Api::GetItemIdRequest.item_id(http_response)
+      raise NameError, "#{@config['hoster_name']} hoster not found" unless id
+      @hoster_id = id
     end
 
     def application_id
       return @application_id if @application_id
       id_request = Api::GetItemIdRequest.new(@http_client, 'applications', @config['application_name'])
       http_response = Api::Response.new(id_request.run)
-      @application_id = Api::GetItemIdRequest.item_id(http_response)
+      id = Api::GetItemIdRequest.item_id(http_response)
+      raise NameError, "#{@config['application_name']} application not found" unless id
+      @application_id = id
     end
 
     def plan_id
       return @plan_id if @plan_id
       id_request = Api::GetPlanIdRequest.new(@http_client, hoster_id, @config['plan_name'])
       http_response = Api::Response.new(id_request.run)
-      @plan_id = Api::GetPlanIdRequest.item_id(http_response)
+      id = Api::GetPlanIdRequest.item_id(http_response)
+      raise NameError, "#{@config['plan_name']} plan not found" unless id
+      @plan_id = id
     end
   end
 end

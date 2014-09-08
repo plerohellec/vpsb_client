@@ -34,9 +34,9 @@ module VpsbClient
       post_params = request.post_params
       post_params[:authenticity_token] = csrf_token if csrf_token
       if request.content_type == 'application/json'
-        JSON.generate(post_params)
+        JSON.generate(post_params) # curl doesn't do the json encoding by itself
       else
-        url_encode(post_params)
+        post_params # but curl does the www form encoding
       end
     end
 
