@@ -41,7 +41,7 @@ module VpsbClient
       end
     end
 
-    describe 'SigninRequest' do
+    describe SigninRequest do
       it 'url is /users/signin' do
         curl = double('curl')
         client = HttpClient.new(curl, 'http', 'localhost')
@@ -50,6 +50,23 @@ module VpsbClient
                                            "application/x-www-form-urlencoded").once
 
         req = SigninRequest.new(client, 'foo@bar.com', 'foobar', 'xyz')
+        req.run
+      end
+    end
+
+    describe CreateTrialRequest do
+      it 'url id /admin/trials' do
+        curl = double('curl')
+        client = HttpClient.new(curl, 'http', 'localhost')
+        params = Builders::Trial.new(1, 1, 1, 'foo bar').params
+        csrf_token = 'abc'
+        trial_params = { 'trial' => params, 'authenticity_token' => csrf_token }
+
+        expect(curl).to receive(:post).with('http://localhost/admin/trials.json',
+                                            trial_params.to_json,
+                                            "application/json").once
+
+        req = CreateTrialRequest.new(client, params, csrf_token)
         req.run
       end
     end
