@@ -55,19 +55,32 @@ module VpsbClient
     end
 
     describe CreateTrialRequest do
-      it 'url id /admin/trials' do
-        curl = double('curl')
-        client = HttpClient.new(curl, 'http', 'localhost')
-        params = Builders::Trial.new(1, 1, 1, 'foo bar').params
-        csrf_token = 'abc'
-        trial_params = { 'trial' => params, 'authenticity_token' => csrf_token }
+      before :each do
+        @curl = double('curl')
+        @client = HttpClient.new(@curl, 'http', 'localhost')
+        @params = Builders::Trial.new(1, 1, 1, 'foo bar').params
+        @csrf_token = 'abc'
+        @trial_params = { 'trial' => @params, 'authenticity_token' => @csrf_token }
+      end
 
-        expect(curl).to receive(:post).with('http://localhost/admin/trials.json',
-                                            trial_params.to_json,
+      it 'url id /admin/trials' do
+        expect(@curl).to receive(:post).with('http://localhost/admin/trials.json',
+                                            @trial_params.to_json,
                                             "application/json").once
 
-        req = CreateTrialRequest.new(client, params, csrf_token)
+        req = CreateTrialRequest.new(@client, @params, @csrf_token)
         req.run
+      end
+
+      it 'parses the response from the server' do
+        curl_response = double('response')
+        allow(curl_response).to receive(:response_code).and_return(200)
+        allow(curl_response).to receive(:body_str).and_return('{"id": 8, "application_id": 1}')
+        allow(curl_response).to receive(:content_type).and_return("application/json")
+        allow(@curl).to receive(:post).and_return(curl_response)
+        req = CreateTrialRequest.new(@client, @params, @csrf_token)
+        resp = Response.new(req.run)
+        expect(CreateTrialRequest.trial_id(resp)).to eq(8)
       end
     end
   end
