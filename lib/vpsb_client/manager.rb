@@ -50,6 +50,15 @@ module VpsbClient
       Api::CreateTrialRequest.trial_id(http_response)
     end
 
+    def current_trial
+      builder = Builders::Trial.new(hoster_id, application_id, plan_id, @config['comment'])
+      current_trial_request = Api::GetCurrentTrialRequest.new(@http_client, builder.params)
+      curl_response = current_trial_request.run
+      puts curl_response.body
+      http_response = Api::Response.new(curl_response)
+      Api::GetCurrentTrialRequest.trial_id(http_response)
+    end
+
     def hoster_id
       return @hoster_id if @hoster_id
       id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', @config['hoster_name'])
