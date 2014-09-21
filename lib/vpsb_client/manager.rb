@@ -59,6 +59,14 @@ module VpsbClient
       Api::GetCurrentTrialRequest.trial_id(http_response)
     end
 
+    def trial_last_metric(trial_id, length)
+      current_trial_request = Api::GetTrialLastMetricRequest.new(@http_client, { trial_id: trial_id, length: length})
+      curl_response = current_trial_request.run
+      puts curl_response.body
+      http_response = Api::Response.new(curl_response)
+      Api::GetTrialLastMetricRequest.started_at(http_response)
+    end
+
     def hoster_id
       return @hoster_id if @hoster_id
       id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', @config['hoster_name'])

@@ -92,7 +92,7 @@ module VpsbClient
           expect(GetCurrentTrialRequest.trial_id(resp)).to eq(8)
         end
 
-        it 'extracts ni from response if notfound' do
+        it 'extracts nil from response if notfound' do
           curl_response = double('response')
           allow(curl_response).to receive(:response_code).and_return(200)
           allow(curl_response).to receive(:body_str).and_return('[]')
@@ -101,6 +101,41 @@ module VpsbClient
           req = GetCurrentTrialRequest.new(@client, @params)
           resp = Response.new(req.run)
           expect(GetCurrentTrialRequest.trial_id(resp)).to be_nil
+        end
+      end
+
+      describe GetTrialLastMetricRequest do
+        before :each do
+          @params = { trial_id: 1, length: 3600 }
+        end
+
+        it 'gets /admin/trials/:id/last_metric with length' do
+          expect(@curl).to receive(:get).with('http://localhost/admin/trials/1/last_metric.json?length=3600').once
+
+          req = GetTrialLastMetricRequest.new(@client, @params)
+          req.run
+        end
+
+        it 'extracts current trial id from response if found' do
+          curl_response = double('response')
+          allow(curl_response).to receive(:response_code).and_return(200)
+          allow(curl_response).to receive(:body_str).and_return('[{"id":3016,"trial_id":22,"started_at":"2014-07-06T23:00:00.000Z","duration_seconds":3600}]')
+          allow(curl_response).to receive(:content_type).and_return("application/json")
+          allow(@curl).to receive(:get).and_return(curl_response)
+          req = GetTrialLastMetricRequest.new(@client, @params)
+          resp = Response.new(req.run)
+          expect(GetTrialLastMetricRequest.started_at(resp)).to eq(Time.new(2014,7,6,16,0,0))
+        end
+
+        it 'extracts nil from response if notfound' do
+          curl_response = double('response')
+          allow(curl_response).to receive(:response_code).and_return(200)
+          allow(curl_response).to receive(:body_str).and_return('[]')
+          allow(curl_response).to receive(:content_type).and_return("application/json")
+          allow(@curl).to receive(:get).and_return(curl_response)
+          req = GetTrialLastMetricRequest.new(@client, @params)
+          resp = Response.new(req.run)
+          expect(GetTrialLastMetricRequest.started_at(resp)).to be_nil
         end
       end
 
