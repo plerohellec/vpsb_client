@@ -2,6 +2,8 @@ require 'io/console'
 
 module VpsbClient
   class Manager
+    attr_reader :http_client
+
     def initialize(config_path)
       @config_path = config_path
     end
@@ -92,6 +94,26 @@ module VpsbClient
       id = Api::GetPlanIdRequest.item_id(http_response)
       raise NameError, "#{@config['plan_name']} plan not found" unless id
       @plan_id = id
+    end
+
+    def upload_metrics
+      trial_id = current_trial
+      sar_manager = Datafiles::SarManager.new(@config['sar_orig_path'], @config['sar_target_path'])
+      sar_manager.run
+      metric_ids = []
+      [ 10.minutes, 1.hour, 1.day ].each do |len|
+        last_started_at = trial_last_metric(trial_id, len)
+        builder = Builders::MetricBuilder.new()
+        builder.each_interval do |interval|
+          upload_request = Api::PostMetricRequest.new(@http_client, trial_id, interval, csrf_token)
+          http_response = Api::Response.new(upload_request.run)
+          unless http_response.success?
+            puts "Failed to upload metric (len=#{len} interval=#{interval.inspect})"
+            break
+          end
+          metric_ids << Api::PostMetricRequest.metric_id(http_response)
+        end
+      end
     end
   end
 end

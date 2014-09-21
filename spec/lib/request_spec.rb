@@ -139,6 +139,21 @@ module VpsbClient
         end
       end
 
+      describe PostMetricRequest do
+        before :each do
+          @csrf_token = 'abc'
+          @metric_params = { 'metric' => @params, 'authenticity_token' => @csrf_token }
+        end
+
+        it 'gets /admin/metrics with length' do
+          expect(@curl).to receive(:post).with('http://localhost/admin/metrics',
+                                              @trial_params.to_json,
+                                              "application/json")).once
+
+          req = PostMetricRequest.new(@client, @trial_id, @metric, @csrf_token)
+          req.run
+        end
+      end
     end
   end
 end
