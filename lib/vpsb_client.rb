@@ -15,6 +15,7 @@ require "#{vpsb_base}/vpsb_client/api/signin_request"
 require "#{vpsb_base}/vpsb_client/api/create_trial_request"
 require "#{vpsb_base}/vpsb_client/builders/system_info_parser"
 require "#{vpsb_base}/vpsb_client/builders/trial"
+require "#{vpsb_base}/vpsb_client/datafiles/sar_manager"
 
 module VpsbClient
 end

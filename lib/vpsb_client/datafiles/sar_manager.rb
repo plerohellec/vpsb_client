@@ -1,4 +1,4 @@
-module VpsbVclient
+module VpsbClient
   module Datafiles
     class SarManager
       class NotFoundError < StandardError; end
@@ -21,13 +21,14 @@ module VpsbVclient
       end
 
       private
+
       def create_target_path
         if File.directory?(@target_path)
           raise PermissionDeniedError, "#{@target_path} is not writable" unless File.writable?(@target_path)
           return
         end
-        raise PermissionDeniedError unless File.writable?(File.dirname(@target_path), 0755)
-        Dir.mkdir(@target_path)
+        raise PermissionDeniedError unless File.writable?(File.dirname(@target_path))
+        Dir.mkdir(@target_path, 0755)
       end
 
       def create_daily_formatted
@@ -39,7 +40,6 @@ module VpsbVclient
 
             formatted_filename = "#{@target_path}/formatted_sa#{fileday}"
             next if File.exist?(formatted_filename)
-            puts "Formatting sar file to #{formatted_filename}"
             sadf(filename, formatted_filename)
           end
         end
