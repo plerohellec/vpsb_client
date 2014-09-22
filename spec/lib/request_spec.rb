@@ -144,7 +144,7 @@ module VpsbClient
           @csrf_token = 'abc'
           @trial_id = 1
           @metric = { duration_seconds: 3600 }
-          @metric_params = @metric.merge({ 'trial_id' => @trial_id, 'authenticity_token' => @csrf_token })
+          @metric_params = { metric: @metric.merge({ 'trial_id' => @trial_id}), 'authenticity_token' => @csrf_token }
         end
 
         it 'gets /admin/metrics with length' do

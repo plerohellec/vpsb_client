@@ -8,6 +8,10 @@ manager.setup
 puts "csrf token=#{manager.csrf_token}"
 
 trial_id = manager.current_trial
+unless trial_id
+  puts "Cannot find current trial"
+  exit 1
+end
 
 interval = {}
 interval[:duration_seconds] = 3600

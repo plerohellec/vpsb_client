@@ -3,13 +3,13 @@ module VpsbClient
     class CreateTrialRequest < PostRequest
       MANDATORY_PARAM_NAMES = [ :hoster_id, :application_id, :plan_id, :comment, :os, :free_memory_mb, :cpu_type, :num_cores, :kernel]
 
-      def initialize(http_client, params, csrf_token)
+      def initialize(http_client, trial, csrf_token)
         super(http_client, csrf_token)
-        @post_params = { trial: params }
+        @trial = trial
         MANDATORY_PARAM_NAMES.each do |name|
-          raise ArgumentError, "param #{name} is mandatory" unless params.keys.include?(name)
+          raise ArgumentError, "param #{name} is mandatory" unless @trial.keys.include?(name)
         end
-        params.keys.each do |name|
+        @trial.keys.each do |name|
           raise ArgumentError, "param #{name} is not allowed" unless MANDATORY_PARAM_NAMES.include?(name)
         end
       end
@@ -19,7 +19,7 @@ module VpsbClient
       end
 
       def post_params
-        @post_params
+        @post_params = { trial: @trial }
       end
 
       def content_type

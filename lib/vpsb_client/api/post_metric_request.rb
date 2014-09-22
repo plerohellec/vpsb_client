@@ -13,7 +13,7 @@ module VpsbClient
       end
 
       def post_params
-        @post_params = @metric.merge(trial_id: @trial_id)
+        @post_params = { metric: @metric.merge(trial_id: @trial_id) }
       end
 
       def content_type
