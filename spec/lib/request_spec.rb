@@ -142,16 +142,29 @@ module VpsbClient
       describe PostMetricRequest do
         before :each do
           @csrf_token = 'abc'
-          @metric_params = { 'metric' => @params, 'authenticity_token' => @csrf_token }
+          @trial_id = 1
+          @metric = { duration_seconds: 3600 }
+          @metric_params = @metric.merge({ 'trial_id' => @trial_id, 'authenticity_token' => @csrf_token })
         end
 
         it 'gets /admin/metrics with length' do
-          expect(@curl).to receive(:post).with('http://localhost/admin/metrics',
-                                              @trial_params.to_json,
-                                              "application/json")).once
+          expect(@curl).to receive(:post).with('http://localhost/admin/metrics.json',
+                                              @metric_params.to_json,
+                                              "application/json").once
 
           req = PostMetricRequest.new(@client, @trial_id, @metric, @csrf_token)
           req.run
+        end
+
+        it 'parses the response from the server' do
+          curl_response = double('response')
+          allow(curl_response).to receive(:response_code).and_return(200)
+          allow(curl_response).to receive(:body_str).and_return('{"id": 8}')
+          allow(curl_response).to receive(:content_type).and_return("application/json")
+          allow(@curl).to receive(:post).and_return(curl_response)
+          req = PostMetricRequest.new(@client, @trial_id, @metric, @csrf_token)
+          resp = Response.new(req.run)
+          expect(PostMetricRequest.metric_id(resp)).to eq(8)
         end
       end
     end
