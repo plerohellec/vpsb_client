@@ -10,6 +10,7 @@ module VpsbClient
         @orig_dir = "#{data_dir}/orig"
         @target_dir = "#{data_dir}/dest"
         @manager = SarManager.new(@orig_dir, @target_dir)
+        allow(Time).to receive(:now).and_return(Time.new(2014,9,21,16,0,1,'-08:00'))
       end
 
       after :each do
@@ -27,7 +28,6 @@ module VpsbClient
 
       it 'generates daily formatted files' do
         @manager.run
-        allow(Time).to receive(:now).and_return(Time.new(2014,9,21,16,0,1,'-08:00'))
         sa_files = [ 'sa18', 'sa19', 'sa20', 'sa21' ]
         formatted_files = sa_files.map { |f| "#{@target_dir}/formatted_#{f}" }
         formatted_files.each do |f|
