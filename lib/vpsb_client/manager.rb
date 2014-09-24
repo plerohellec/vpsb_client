@@ -103,7 +103,7 @@ module VpsbClient
       metric_ids = []
       [ 10.minutes, 1.hour, 1.day ].each do |len|
         last_started_at = trial_last_metric(trial_id, len)
-        builder = Builders::MetricBuilder.new()
+        builder = Builders::MetricsInterval.new()
         builder.each_interval do |interval|
           upload_request = Api::PostMetricRequest.new(@http_client, trial_id, interval, csrf_token)
           http_response = Api::Response.new(upload_request.run)
