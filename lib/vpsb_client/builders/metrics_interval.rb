@@ -1,22 +1,28 @@
+require "#{File.expand_path('../..', __FILE__)}/datafiles/formatted_sar_log_parser"
+require "#{File.expand_path('../..', __FILE__)}/datafiles/timing_log_parser"
+
 module VpsbClient
   module Builders
     class MetricsInterval
-      def initialize(data_path, start_date, interval_length)
-        @data_path = data_path
+      def initialize(sar_path, timing_path, start_date, interval_length)
+        @sar_path = sar_path
+        @timing_path = timing_path
         @start_date = start_date
         @interval_length = interval_length
       end
 
       def each(&block)
-        sar_filenames = Dir.glob("#{@data_path}/formatted_sa*")
-        sar_files = LogfileInterval::LogfileSet.new(sar_filenames, FormattedSarLogParser, :desc)
+        return enum_for(:each) unless block_given?
 
-        timing_filenames = Dir.glob("#{@data_path}/timings.log*")
-        timing_files = LogfileInterval::LogfileSet.new(timing_filenames, TimingLogParser, :desc)
+        sar_filenames = Dir.glob("#{@sar_path}/formatted_sa*")
+        sar_files = LogfileInterval::LogfileSet.new(sar_filenames, Datafiles::FormattedSarLogParser, :desc)
+
+        timing_filenames = Dir.glob("#{@timing_path}/timings.log*")
+        timing_files = LogfileInterval::LogfileSet.new(timing_filenames, Datafiles::TimingLogParser, :desc)
 
         begin
-          sar_builder = LogfileInterval::IntervalBuilder.new(sar_files, FormattedSarLogParser, @interval_length)
-          timing_builder = LogfileInterval::IntervalBuilder.new(timing_files, TimingLogParser, @interval_length)
+          sar_builder = LogfileInterval::IntervalBuilder.new(sar_files, Datafiles::FormattedSarLogParser, @interval_length)
+          timing_builder = LogfileInterval::IntervalBuilder.new(timing_files, Datafiles::TimingLogParser, @interval_length)
 
           sar_enum = sar_builder.each_interval
           timing_enum = timing_builder.each_interval

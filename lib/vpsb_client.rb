@@ -18,8 +18,6 @@ require "#{vpsb_base}/vpsb_client/builders/system_info_parser"
 require "#{vpsb_base}/vpsb_client/builders/trial"
 require "#{vpsb_base}/vpsb_client/builders/metrics_interval"
 require "#{vpsb_base}/vpsb_client/datafiles/sar_manager"
-require "#{vpsb_base}/vpsb_client/datafiles/formatted_sar_log_parser"
-require "#{vpsb_base}/vpsb_client/datafiles/timing_log_parser"
 
 module VpsbClient
 end
