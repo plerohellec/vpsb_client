@@ -4,6 +4,8 @@ module VpsbClient
   class Manager
     attr_reader :http_client
 
+    class LastMetricNotFoundError < StandardError; end
+
     def initialize(config_path)
       @config_path = config_path
     end
@@ -58,7 +60,7 @@ module VpsbClient
       curl_response = current_trial_request.run
       puts curl_response.body
       http_response = Api::Response.new(curl_response)
-      Api::GetCurrentTrialRequest.trial_id(http_response)
+      Api::GetCurrentTrialRequest.trial(http_response)
     end
 
     def trial_last_metric(trial_id, length)
@@ -97,15 +99,17 @@ module VpsbClient
     end
 
     def upload_metrics
-      trial_id = current_trial
-      sar_manager = Datafiles::SarManager.new(@config['sar_orig_path'], @config['sar_target_path'])
+      trial = current_trial
+      sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
       sar_manager.run
       metric_ids = []
-      [ 10.minutes, 1.hour, 1.day ].each do |len|
-        last_started_at = trial_last_metric(trial_id, len)
-        builder = Builders::MetricsInterval.new()
-        builder.each_interval do |interval|
-          upload_request = Api::PostMetricRequest.new(@http_client, trial_id, interval, csrf_token)
+      [ 10 *60, 3600, 86400 ].each do |len|
+        last_started_at = trial_last_metric(trial['id'], len)
+        last_started_at ||= DateTime.parse(trial['started_at']).to_time
+        raise LastMetricNotFoundError unless last_started_at
+        builder = Builders::MetricsInterval.new(@config['formatted_sar_path'], @config['timing_path'], last_started_at, len)
+        builder.each do |interval|
+          upload_request = Api::PostMetricRequest.new(@http_client, trial['id'], interval, csrf_token)
           http_response = Api::Response.new(upload_request.run)
           unless http_response.success?
             puts "Failed to upload metric (len=#{len} interval=#{interval.inspect})"
@@ -114,6 +118,7 @@ module VpsbClient
           metric_ids << Api::PostMetricRequest.metric_id(http_response)
         end
       end
+      metric_ids
     end
   end
 end

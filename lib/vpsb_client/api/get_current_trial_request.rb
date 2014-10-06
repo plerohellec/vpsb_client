@@ -19,10 +19,14 @@ module VpsbClient
         }
       end
 
-      def self.trial_id(http_response)
+      def self.trial(http_response)
         return nil if http_response.parsed_response.empty?
-        trial = http_response.parsed_response.first
-        trial['id']
+        http_response.parsed_response.first
+      end
+
+      def self.trial_id(http_response)
+        t = trial(http_response)
+        t ? t['id'] : nil
       end
     end
   end
