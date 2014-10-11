@@ -40,38 +40,42 @@ module VpsbClient
               break if sar_interval.start_time == timing_interval.start_time
               raise "sar_interval older than timing_interval: #{sar_interval.start_time} > #{timing_interval.start_time}" if sar_interval.start_time > timing_interval.start_time
             end
-            interval = timing_interval.to_hash.merge(sar_interval)
-            interval[:duration_seconds] = timing_interval.length
-            interval[:started_at] = timing_interval.start_time
 
-            pxx_total_ms = timing_interval[:pxx_total_ms]
-            interval[:p50_total_ms] = pxx_total_ms[50]
-            interval[:p75_total_ms] = pxx_total_ms[75]
-            interval[:p95_total_ms] = pxx_total_ms[95]
-            interval[:p99_total_ms] = pxx_total_ms[99]
-
-            pxx_iowait = sar_interval[:pxx_iowait]
-            interval[:p75_iowait_pct] = pxx_iowait[75]
-            interval[:p95_iowait_pct] = pxx_iowait[95]
-            interval[:p99_iowait_pct] = pxx_iowait[99]
-
-            pxx_cpusteal = sar_interval[:pxx_cpusteal]
-            interval[:p75_cpusteal_pct] = pxx_cpusteal[75]
-            interval[:p95_cpusteal_pct] = pxx_cpusteal[95]
-            interval[:p99_cpusteal_pct] = pxx_cpusteal[99]
-
-            pxx_cpuidle = sar_interval[:pxx_cpuidle]
-            interval[:p75_cpuidle_pct] = 100.0 - pxx_cpuidle[75]
-            interval[:p95_cpuidle_pct] = 100.0 - pxx_cpuidle[95]
-            interval[:p99_cpuidle_pct] = 100.0 - pxx_cpuidle[99]
-
-            interval.select! { |k| VALID_METRIC_KEYS.include?(k) }
-
-            puts "yielding interval started_at=#{interval[:started_at]}"
-            yield interval
+            yield convert_to_metric(timing_interval, sar_interval)
           end
         rescue StopIteration
         end
+      end
+
+      private
+
+      def convert_to_metric(timing_interval, sar_interval)
+        interval = timing_interval.to_hash.merge(sar_interval)
+        interval[:duration_seconds] = timing_interval.length
+        interval[:started_at] = timing_interval.start_time
+
+        pxx_total_ms = timing_interval[:pxx_total_ms]
+        interval[:p50_total_ms] = pxx_total_ms[50]
+        interval[:p75_total_ms] = pxx_total_ms[75]
+        interval[:p95_total_ms] = pxx_total_ms[95]
+        interval[:p99_total_ms] = pxx_total_ms[99]
+
+        pxx_iowait = sar_interval[:pxx_iowait]
+        interval[:p75_iowait_pct] = pxx_iowait[75]
+        interval[:p95_iowait_pct] = pxx_iowait[95]
+        interval[:p99_iowait_pct] = pxx_iowait[99]
+
+        pxx_cpusteal = sar_interval[:pxx_cpusteal]
+        interval[:p75_cpusteal_pct] = pxx_cpusteal[75]
+        interval[:p95_cpusteal_pct] = pxx_cpusteal[95]
+        interval[:p99_cpusteal_pct] = pxx_cpusteal[99]
+
+        pxx_cpuidle = sar_interval[:pxx_cpuidle]
+        interval[:p75_cpuidle_pct] = 100.0 - pxx_cpuidle[75]
+        interval[:p95_cpuidle_pct] = 100.0 - pxx_cpuidle[95]
+        interval[:p99_cpuidle_pct] = 100.0 - pxx_cpuidle[99]
+
+        interval.select! { |k| VALID_METRIC_KEYS.include?(k) }
       end
     end
   end

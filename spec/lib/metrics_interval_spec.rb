@@ -19,8 +19,8 @@ module VpsbClient
       context 'first interval' do
         it 'is the most recent' do
           interval_enum = @builder.each
-          expect(interval_enum.next[:start_time]).to eq(Time.new(2014,9,21,13,0,0))
-          expect(interval_enum.next[:start_time]).to eq(Time.new(2014,9,21,12,0,0))
+          expect(interval_enum.next[:started_at]).to eq(Time.new(2014,9,21,13,0,0))
+          expect(interval_enum.next[:started_at]).to eq(Time.new(2014,9,21,12,0,0))
         end
 
         it 'has the requested length' do
@@ -30,7 +30,7 @@ module VpsbClient
 
         it 'has the right averaged timing' do
           i = @builder.each.first
-          expect(i[:start_time]).to eq(Time.new(2014,9,21,13,0,0))
+          expect(i[:started_at]).to eq(Time.new(2014,9,21,13,0,0))
           expect(i[:resptime_total_ms]).to eq(29.5)
         end
 
@@ -46,7 +46,7 @@ module VpsbClient
           @builder.each do |i|
             last_interval = i
           end
-          expect(last_interval[:start_time]).to eq(Time.new(2014,9,20,0,0,0))
+          expect(last_interval[:started_at]).to eq(Time.new(2014,9,20,0,0,0))
           expect(last_interval[:duration_seconds]).to eq(3600)
         end
       end
