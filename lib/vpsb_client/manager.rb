@@ -58,7 +58,6 @@ module VpsbClient
       builder = Builders::Trial.new(hoster_id, application_id, plan_id, @config['comment'])
       current_trial_request = Api::GetCurrentTrialRequest.new(@http_client, builder.params)
       curl_response = current_trial_request.run
-      puts curl_response.body
       http_response = Api::Response.new(curl_response)
       Api::GetCurrentTrialRequest.trial(http_response)
     end
@@ -66,7 +65,6 @@ module VpsbClient
     def trial_last_metric(trial_id, length)
       current_trial_request = Api::GetTrialLastMetricRequest.new(@http_client, { trial_id: trial_id, length: length})
       curl_response = current_trial_request.run
-      puts curl_response.body
       http_response = Api::Response.new(curl_response)
       Api::GetTrialLastMetricRequest.started_at(http_response)
     end
@@ -107,6 +105,7 @@ module VpsbClient
         last_started_at = trial_last_metric(trial['id'], len)
         last_started_at ||= DateTime.parse(trial['started_at']).to_time
         raise LastMetricNotFoundError unless last_started_at
+        puts "len=#{len} last_metric_started_at=#{last_started_at}"
         builder = Builders::MetricsInterval.new(@config['formatted_sar_path'], @config['timing_path'], last_started_at, len)
         builder.each do |interval|
           upload_request = Api::PostMetricRequest.new(@http_client, trial['id'], interval, csrf_token)

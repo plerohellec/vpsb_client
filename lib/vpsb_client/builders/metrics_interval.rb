@@ -4,6 +4,10 @@ require "#{File.expand_path('../..', __FILE__)}/datafiles/timing_log_parser"
 module VpsbClient
   module Builders
     class MetricsInterval
+      class FileNotFound < StandardError; end
+
+      VALID_METRIC_KEYS = [ :trial_id, :started_at, :duration_seconds, :num_requests, :resptime_total_ms, :resptime_db_ms, :resptime_view_ms, :cpu_idle, :cpu_steal, :iowait, :p50_total_ms, :p75_total_ms, :p95_total_ms, :p99_total_ms, :p75_iowait_pct, :p95_iowait_pct, :p99_iowait_pct,:p75_cpusteal_pct, :p95_cpusteal_pct, :p99_cpusteal_pct, :p75_cpuidle_pct, :p95_cpuidle_pct, :p99_cpuidle_pct ]
+
       def initialize(sar_path, timing_path, start_date, interval_length)
         @sar_path = sar_path
         @timing_path = timing_path
@@ -15,9 +19,12 @@ module VpsbClient
         return enum_for(:each) unless block_given?
 
         sar_filenames = Dir.glob("#{@sar_path}/formatted_sa*")
-        sar_files = LogfileInterval::LogfileSet.new(sar_filenames, Datafiles::FormattedSarLogParser, :desc)
-
         timing_filenames = Dir.glob("#{@timing_path}/timings.log*")
+
+        raise FileNotFound, "No file matching #{@sar_path}/formatted_sa*" unless sar_filenames.any?
+        raise FileNotFound, "No file matching #{@timing_path}/timings.log*" unless timing_filenames.any?
+
+        sar_files = LogfileInterval::LogfileSet.new(sar_filenames, Datafiles::FormattedSarLogParser, :desc)
         timing_files = LogfileInterval::LogfileSet.new(timing_filenames, Datafiles::TimingLogParser, :desc)
 
         begin
@@ -36,19 +43,31 @@ module VpsbClient
             interval = timing_interval.to_hash.merge(sar_interval)
             interval[:duration_seconds] = timing_interval.length
             interval[:started_at] = timing_interval.start_time
-            interval[:p50_total_ms] = timing_interval[:pxx_total_ms][50]
-            interval[:p75_total_ms] = timing_interval[:pxx_total_ms][75]
-            interval[:p95_total_ms] = timing_interval[:pxx_total_ms][95]
-            interval[:p99_total_ms] = timing_interval[:pxx_total_ms][99]
-            interval[:p75_iowait_pct] = sar_interval[:pxx_iowait][75]
-            interval[:p95_iowait_pct] = sar_interval[:pxx_iowait][95]
-            interval[:p99_iowait_pct] = sar_interval[:pxx_iowait][99]
-            interval[:p75_cpusteal_pct] = sar_interval[:pxx_cpusteal][75]
-            interval[:p95_cpusteal_pct] = sar_interval[:pxx_cpusteal][95]
-            interval[:p99_cpusteal_pct] = sar_interval[:pxx_cpusteal][99]
-            interval[:p75_cpuidle_pct] = 100.0 - sar_interval[:pxx_cpuidle][75]
-            interval[:p95_cpuidle_pct] = 100.0 - sar_interval[:pxx_cpuidle][95]
-            interval[:p99_cpuidle_pct] = 100.0 - sar_interval[:pxx_cpuidle][99]
+
+            pxx_total_ms = timing_interval[:pxx_total_ms]
+            interval[:p50_total_ms] = pxx_total_ms[50]
+            interval[:p75_total_ms] = pxx_total_ms[75]
+            interval[:p95_total_ms] = pxx_total_ms[95]
+            interval[:p99_total_ms] = pxx_total_ms[99]
+
+            pxx_iowait = sar_interval[:pxx_iowait]
+            interval[:p75_iowait_pct] = pxx_iowait[75]
+            interval[:p95_iowait_pct] = pxx_iowait[95]
+            interval[:p99_iowait_pct] = pxx_iowait[99]
+
+            pxx_cpusteal = sar_interval[:pxx_cpusteal]
+            interval[:p75_cpusteal_pct] = pxx_cpusteal[75]
+            interval[:p95_cpusteal_pct] = pxx_cpusteal[95]
+            interval[:p99_cpusteal_pct] = pxx_cpusteal[99]
+
+            pxx_cpuidle = sar_interval[:pxx_cpuidle]
+            interval[:p75_cpuidle_pct] = 100.0 - pxx_cpuidle[75]
+            interval[:p95_cpuidle_pct] = 100.0 - pxx_cpuidle[95]
+            interval[:p99_cpuidle_pct] = 100.0 - pxx_cpuidle[99]
+
+            interval.select! { |k| VALID_METRIC_KEYS.include?(k) }
+
+            puts "yielding interval started_at=#{interval[:started_at]}"
             yield interval
           end
         rescue StopIteration

@@ -8,11 +8,12 @@ manager.setup
 
 puts "csrf token=#{manager.csrf_token}"
 
-trial_id = manager.current_trial
+trial_id = manager.current_trial['id']
 unless trial_id
   puts "Cannot find current trial"
   exit 1
 end
+puts "trial_id=#{trial_id}"
 
 metric_ids = manager.upload_metrics
 

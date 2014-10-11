@@ -147,7 +147,7 @@ module VpsbClient
           @metric_params = { metric: @metric.merge({ 'trial_id' => @trial_id}), 'authenticity_token' => @csrf_token }
         end
 
-        it 'gets /admin/metrics with length' do
+        it 'posts /admin/metrics with length' do
           expect(@curl).to receive(:post).with('http://localhost/admin/metrics.json',
                                               @metric_params.to_json,
                                               "application/json").once
