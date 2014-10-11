@@ -16,4 +16,5 @@ end
 puts "trial_id=#{trial_id}"
 
 metric_ids = manager.upload_metrics
+puts "metric_ids=#{metric_ids.inspect}"
 
