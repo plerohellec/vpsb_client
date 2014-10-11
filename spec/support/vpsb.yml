@@ -1,7 +1,7 @@
 application_name: The Application
 plan_name: 2GB $20
 hoster_name: linode
-protocol: http
+vpsb_protocol: http
 vpsb_hostname: localhost:3000
 cookie_jar_path: /tmp/curl_cookie_jar
 email: test@example.com
