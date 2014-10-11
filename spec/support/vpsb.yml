@@ -1,8 +1,11 @@
-application_name: uupdates
-plan_name: 1GB $10
+application_name: The Application
+plan_name: 2GB $20
 hoster_name: linode
-vpsb_protocol: https
-vpsb_host: localhost
-comment: just a test
+protocol: http
+vpsb_hostname: localhost:3000
 cookie_jar_path: /tmp/curl_cookie_jar
-email: test@test.com
+email: test@example.com
+comment: just a test
+sar_path: /var/log/sysstat
+formatted_sar_path: /tmp
+timing_path: /theapp/log
