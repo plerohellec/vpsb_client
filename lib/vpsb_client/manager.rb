@@ -16,6 +16,10 @@ module VpsbClient
       @http_client = HttpClient.new(@curl_wrapper, @config['vpsb_protocol'], @config['vpsb_hostname'])
     end
 
+    def enabled?
+      @config.fetch(:enabled, false)
+    end
+
     def signin
       puts "Enter password: "
       password = STDIN.noecho(&:gets).chomp
@@ -47,6 +51,11 @@ module VpsbClient
     end
 
     def create_trial
+      unless enabled?
+        puts "not running because vpsb_client is disabled"
+        return
+      end
+
       builder = Builders::Trial.new(hoster_id, application_id, plan_id, @config['comment'])
       create_trial_request = Api::CreateTrialRequest.new(@http_client, builder.params, csrf_token)
       curl_response = create_trial_request.run
@@ -97,6 +106,11 @@ module VpsbClient
     end
 
     def upload_metrics
+      unless enabled?
+        puts "not running because vpsb_client is disabled"
+        return
+      end
+
       trial = current_trial
       sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
       sar_manager.run
