@@ -11,15 +11,15 @@ module VpsbClient
     end
 
     it 'parses the config file' do
-      expect(@config.value('vpsb_hostname')).to eq('localhost:3000')
+      expect(@config.fetch('vpsb_hostname')).to eq('localhost:3000')
     end
 
     it 'raises an exception for non existent keys' do
-      expect{@config.value('foobar')}.to raise_error
+      expect{@config.fetch('foobar')}.to raise_error
     end
 
     it 'understands []' do
-      expect{@config.value('vpsb_hostname')}.to_not raise_error
+      expect{@config.fetch('vpsb_hostname')}.to_not raise_error
     end
 
   end

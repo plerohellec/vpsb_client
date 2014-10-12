@@ -60,7 +60,7 @@ module VpsbClient
       create_trial_request = Api::CreateTrialRequest.new(@http_client, builder.params, csrf_token)
       curl_response = create_trial_request.run
       http_response = Api::Response.new(curl_response)
-      Api::CreateTrialRequest.trial_id(http_response)
+      Api::CreateTrialRequest.trial(http_response)
     end
 
     def current_trial

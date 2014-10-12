@@ -26,8 +26,12 @@ module VpsbClient
         'application/json'
       end
 
+      def self.trial(http_response)
+        http_response.parsed_response
+      end
+
       def self.trial_id(http_response)
-        http_response.parsed_response['id']
+        trial(http_response)['id']
       end
     end
   end

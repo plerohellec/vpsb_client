@@ -7,12 +7,12 @@ module VpsbClient
       @yml = YAML.load_file(path)
     end
 
-    def value(name)
-      @yml.fetch(name)
+    def fetch(name, default=nil)
+      default ? @yml.fetch(name, default) : @yml.fetch(name)
     end
 
     def [](name)
-      value(name)
+      fetch(name)
     end
   end
 end
