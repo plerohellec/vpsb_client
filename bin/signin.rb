@@ -7,5 +7,8 @@ manager.setup
 
 puts "csrf token=#{manager.csrf_token}"
 
-manager.signin
+puts "Enter password: "
+password = STDIN.noecho(&:gets).chomp
+
+manager.signin(password)
 puts "signed in? #{manager.signed_in?}"

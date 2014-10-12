@@ -20,9 +20,11 @@ module VpsbClient
       @config.fetch(:enabled, false)
     end
 
-    def signin
-      puts "Enter password: "
-      password = STDIN.noecho(&:gets).chomp
+    def signin(password=nil)
+      unless password || @config[:password]
+        puts "No password found"
+        return
+      end
 
       signin_request = Api::SigninRequest.new(@http_client, @config['email'], password, csrf_token)
       curl_response = signin_request.run
@@ -105,17 +107,16 @@ module VpsbClient
       @plan_id = id
     end
 
-    def upload_metrics
+    def upload_metrics(trial)
       unless enabled?
         puts "not running because vpsb_client is disabled"
         return
       end
 
-      trial = current_trial
       sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
       sar_manager.run
       metric_ids = []
-      [ 10 *60, 3600, 86400 ].each do |len|
+      [ 10*60, 3600, 86400 ].each do |len|
         last_started_at = trial_last_metric(trial['id'], len)
         last_started_at ||= DateTime.parse(trial['started_at']).to_time
         raise LastMetricNotFoundError unless last_started_at
