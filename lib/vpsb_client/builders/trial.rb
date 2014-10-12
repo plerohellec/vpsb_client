@@ -10,6 +10,7 @@ module VpsbClient
 
       def params
         trial_params = {}
+        trial_params[:started_at] = Time.now
         trial_params[:hoster_id] = @hoster_id
         trial_params[:application_id] = @application_id
         trial_params[:plan_id] = @plan_id
