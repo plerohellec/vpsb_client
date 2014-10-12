@@ -8,11 +8,11 @@ module VpsbClient
     end
 
     def fetch(name, default=nil)
-      default ? @yml.fetch(name, default) : @yml.fetch(name)
+      default ? @yml.fetch(name.to_s, default) : @yml.fetch(name.to_s)
     end
 
     def [](name)
-      fetch(name)
+      fetch(name.to_s)
     end
   end
 end
