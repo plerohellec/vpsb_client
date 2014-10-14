@@ -122,8 +122,7 @@ module VpsbClient
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |len|
         last_started_at = trial_last_metric(trial['id'], len)
-        last_started_at ||= DateTime.parse(trial['started_at']).to_time
-        raise LastMetricNotFoundError unless last_started_at
+        last_started_at ||= start_boundary_time(DateTime.parse(trial['started_at']).to_time)
         puts "len=#{len} last_metric_started_at=#{last_started_at}"
         oldest_valid_started_at = last_started_at + len
         if Time.now < oldest_valid_started_at + len
@@ -142,6 +141,12 @@ module VpsbClient
         end
       end
       metric_ids
+    end
+
+    private
+
+    def start_boundary_time(t)
+      Time.at((t.to_i / length.to_i) * length.to_i)
     end
   end
 end
