@@ -125,7 +125,8 @@ module VpsbClient
         last_started_at ||= DateTime.parse(trial['started_at']).to_time
         raise LastMetricNotFoundError unless last_started_at
         puts "len=#{len} last_metric_started_at=#{last_started_at}"
-        builder = Builders::MetricsInterval.new(@config['formatted_sar_path'], @config['timing_path'], last_started_at, len)
+        oldest_valid_started_at = last_started_at + len
+        builder = Builders::MetricsInterval.new(@config['formatted_sar_path'], @config['timing_path'], oldest_valid_started_at, len)
         builder.each do |interval|
           upload_request = Api::PostMetricRequest.new(@http_client, trial['id'], interval, csrf_token)
           http_response = Api::Response.new(upload_request.run)
