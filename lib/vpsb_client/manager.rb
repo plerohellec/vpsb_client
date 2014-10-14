@@ -26,6 +26,8 @@ module VpsbClient
         return
       end
 
+      password ||= @config[:password]
+
       signin_request = Api::SigninRequest.new(@http_client, @config['email'], password, csrf_token)
       curl_response = signin_request.run
       http_response = Api::Response.new(curl_response)

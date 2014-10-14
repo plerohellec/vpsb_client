@@ -5,8 +5,8 @@ module VpsbClient
     class Response
       attr_reader :code, :body_str, :content_type
 
-      class NotAuthenticated < Exception; end
-      class HttpError < Exception; end
+      class NotAuthenticated < StandardError; end
+      class HttpError < StandardError; end
 
       def initialize(curl_response)
         @code = curl_response.response_code
