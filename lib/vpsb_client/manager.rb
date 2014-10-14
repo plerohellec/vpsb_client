@@ -51,7 +51,9 @@ module VpsbClient
 
       get_csrf_request = Api::GetCsrfTokenRequest.new(@http_client, url_path)
       curl_response = get_csrf_request.run
-      @csrf_token = Api::GetCsrfTokenRequest.csrf_token(curl_response)
+      csrf_token = Api::GetCsrfTokenRequest.csrf_token(curl_response)
+      @csrf_token = csrf_token if signed_in? # the token changes after signin
+      csrf_token
     end
 
     def create_trial
