@@ -25,7 +25,7 @@ module VpsbClient
 
     def signin(password=nil)
       unless password || @config[:password]
-        logger.debug "No password found"
+        VpsbClient.logger.debug "No password found"
         return
       end
 
@@ -61,7 +61,7 @@ module VpsbClient
 
     def create_trial
       unless enabled?
-        logger.debug "not running because vpsb_client is disabled"
+        VpsbClient.logger.debug "not running because vpsb_client is disabled"
         return
       end
 
@@ -126,10 +126,10 @@ module VpsbClient
       [ 10*60, 3600, 86400 ].each do |len|
         last_started_at = trial_last_metric(trial['id'], len)
         last_started_at ||= start_boundary_time(DateTime.parse(trial['started_at']).to_time)
-        logger.debug "len=#{len} last_metric_started_at=#{last_started_at}"
+        VpsbClient.logger.debug "len=#{len} last_metric_started_at=#{last_started_at}"
         oldest_valid_started_at = last_started_at + len
         if Time.now < oldest_valid_started_at + len
-          logger.debug "skipping #{len} interval because too soon"
+          VpsbClient.logger.debug "skipping #{len} interval because too soon"
           next
         end
         builder = Builders::MetricsInterval.new(@config['formatted_sar_path'], @config['timing_path'], oldest_valid_started_at, len)
@@ -137,7 +137,7 @@ module VpsbClient
           upload_request = Api::PostMetricRequest.new(@http_client, trial['id'], interval, csrf_token)
           http_response = Api::Response.new(upload_request.run)
           unless http_response.success?
-            logger.debug "Failed to upload metric (len=#{len} interval=#{interval.inspect})"
+            VpsbClient.logger.debug "Failed to upload metric (len=#{len} interval=#{interval.inspect})"
             break
           end
           metric_ids << Api::PostMetricRequest.metric_id(http_response)
