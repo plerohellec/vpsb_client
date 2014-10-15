@@ -20,4 +20,11 @@ require "#{vpsb_base}/vpsb_client/builders/metrics_interval"
 require "#{vpsb_base}/vpsb_client/datafiles/sar_manager"
 
 module VpsbClient
+  def self.logger=(logger)
+    @@logger = logger
+  end
+
+  def self.logger
+    @@logger
+  end
 end

@@ -1,4 +1,5 @@
 require 'io/console'
+require 'logger'
 
 module VpsbClient
   class Manager
@@ -6,11 +7,13 @@ module VpsbClient
 
     class LastMetricNotFoundError < StandardError; end
 
-    def initialize(config_path)
+    def initialize(config_path, logger=Logger.new(STDOUT))
       @config_path = config_path
+      @logger = logger
     end
 
     def setup
+      VpsbClient.logger = @logger
       @config = Config.new(@config_path)
       @curl_wrapper = CurlWrapper.new(@config['cookie_jar_path'])
       @http_client = HttpClient.new(@curl_wrapper, @config['vpsb_protocol'], @config['vpsb_hostname'])
@@ -22,7 +25,7 @@ module VpsbClient
 
     def signin(password=nil)
       unless password || @config[:password]
-        puts "No password found"
+        logger.debug "No password found"
         return
       end
 
@@ -58,7 +61,7 @@ module VpsbClient
 
     def create_trial
       unless enabled?
-        puts "not running because vpsb_client is disabled"
+        logger.debug "not running because vpsb_client is disabled"
         return
       end
 
@@ -113,7 +116,7 @@ module VpsbClient
 
     def upload_metrics(trial)
       unless enabled?
-        puts "not running because vpsb_client is disabled"
+        logger.debug "not running because vpsb_client is disabled"
         return
       end
 
@@ -123,10 +126,10 @@ module VpsbClient
       [ 10*60, 3600, 86400 ].each do |len|
         last_started_at = trial_last_metric(trial['id'], len)
         last_started_at ||= start_boundary_time(DateTime.parse(trial['started_at']).to_time)
-        puts "len=#{len} last_metric_started_at=#{last_started_at}"
+        logger.debug "len=#{len} last_metric_started_at=#{last_started_at}"
         oldest_valid_started_at = last_started_at + len
         if Time.now < oldest_valid_started_at + len
-          puts "skipping #{len} interval because too soon"
+          logger.debug "skipping #{len} interval because too soon"
           next
         end
         builder = Builders::MetricsInterval.new(@config['formatted_sar_path'], @config['timing_path'], oldest_valid_started_at, len)
@@ -134,7 +137,7 @@ module VpsbClient
           upload_request = Api::PostMetricRequest.new(@http_client, trial['id'], interval, csrf_token)
           http_response = Api::Response.new(upload_request.run)
           unless http_response.success?
-            puts "Failed to upload metric (len=#{len} interval=#{interval.inspect})"
+            logger.debug "Failed to upload metric (len=#{len} interval=#{interval.inspect})"
             break
           end
           metric_ids << Api::PostMetricRequest.metric_id(http_response)
