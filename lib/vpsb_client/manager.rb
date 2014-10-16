@@ -128,7 +128,7 @@ module VpsbClient
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |len|
         last_started_at = trial_last_metric(trial['id'], len)
-        uploader = MetricsUploader.new(@config, trial, len, last_started_at, csrf_token)
+        uploader = MetricsUploader.new(@config, @http_client, trial, len, last_started_at, csrf_token)
         uploader.upload
         metric_ids += uploader.created_metric_ids
       end

@@ -2,8 +2,9 @@ module VpsbClient
   class MetricsUploader
     attr_reader :created_metric_ids
 
-    def initialize(config, trial, len, last_metric_started_at, csrf_token)
+    def initialize(config, http_client, trial, len, last_metric_started_at, csrf_token)
       @config = config
+      @http_client = http_client
       @trial = trial
       @len = len
       @last_metric_started_at = last_metric_started_at
