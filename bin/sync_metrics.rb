@@ -15,6 +15,7 @@ unless trial_id
 end
 puts "trial_id=#{trial_id}"
 
-metric_ids = manager.upload_metrics
+trial = manager.current_trial
+metric_ids = manager.upload_metrics(trial)
 puts "metric_ids=#{metric_ids.inspect}"
 

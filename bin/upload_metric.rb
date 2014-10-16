@@ -7,7 +7,7 @@ manager.setup
 
 puts "csrf token=#{manager.csrf_token}"
 
-trial_id = manager.current_trial
+trial_id = manager.current_trial['id']
 unless trial_id
   puts "Cannot find current trial"
   exit 1
@@ -16,7 +16,6 @@ end
 interval = {}
 interval[:duration_seconds] = 3600
 interval[:started_at] = Time.now - 3600
-interval[:ended_at] = Time.now
 interval[:p50_total_ms] = 1
 interval[:p75_total_ms] = 1
 interval[:p95_total_ms] = 1

@@ -1,6 +1,8 @@
 require 'io/console'
 require 'logger'
 
+require File.join(File.expand_path('..', __FILE__), 'metrics_uploader')
+
 module VpsbClient
   class Manager
     attr_reader :http_client
@@ -122,34 +124,16 @@ module VpsbClient
 
       sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
       sar_manager.run
+
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |len|
         last_started_at = trial_last_metric(trial['id'], len)
-        last_started_at ||= start_boundary_time(DateTime.parse(trial['started_at']).to_time)
-        VpsbClient.logger.debug "len=#{len} last_metric_started_at=#{last_started_at}"
-        oldest_valid_started_at = last_started_at + len
-        if Time.now < oldest_valid_started_at + len
-          VpsbClient.logger.debug "skipping #{len} interval because too soon"
-          next
-        end
-        builder = Builders::MetricsInterval.new(@config['formatted_sar_path'], @config['timing_path'], oldest_valid_started_at, len)
-        builder.each do |interval|
-          upload_request = Api::PostMetricRequest.new(@http_client, trial['id'], interval, csrf_token)
-          http_response = Api::Response.new(upload_request.run)
-          unless http_response.success?
-            VpsbClient.logger.debug "Failed to upload metric (len=#{len} interval=#{interval.inspect})"
-            break
-          end
-          metric_ids << Api::PostMetricRequest.metric_id(http_response)
-        end
+        uploader = MetricsUploader.new(@config, trial, len, last_started_at, csrf_token)
+        uploader.upload
+        metric_ids += uploader.created_metric_ids
       end
       metric_ids
     end
 
-    private
-
-    def start_boundary_time(t)
-      Time.at((t.to_i / length.to_i) * length.to_i)
-    end
   end
 end
