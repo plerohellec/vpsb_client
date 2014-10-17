@@ -75,8 +75,7 @@ module VpsbClient
     end
 
     def current_trial
-      builder = Builders::Trial.new(hoster_id, application_id, plan_id, @config['comment'])
-      current_trial_request = Api::GetCurrentTrialRequest.new(@http_client, builder.params)
+      builder = Builders::Trial.new(@config, hoster_id, application_id, plan_id)
       curl_response = current_trial_request.run
       http_response = Api::Response.new(curl_response)
       Api::GetCurrentTrialRequest.trial(http_response)
