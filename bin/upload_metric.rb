@@ -16,6 +16,9 @@ end
 interval = {}
 interval[:duration_seconds] = 3600
 interval[:started_at] = Time.now - 3600
+interval[:cpu_idle] = 100
+interval[:cpu_steal] = 0
+interval[:iowait] = 0
 interval[:p50_total_ms] = 1
 interval[:p75_total_ms] = 1
 interval[:p95_total_ms] = 1

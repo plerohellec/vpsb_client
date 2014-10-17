@@ -43,7 +43,8 @@ module VpsbClient
 
       describe CreateTrialRequest do
         before :each do
-          @params = Builders::Trial.new(1, 1, 1, 'foo bar').params
+          @config = { 'client_host' => 'test-001' , 'comment' => 'rien a dire' }
+          @params = Builders::Trial.new(@config, 1, 1, 1).params
           @csrf_token = 'abc'
           @trial_params = { 'trial' => @params, 'authenticity_token' => @csrf_token }
         end
