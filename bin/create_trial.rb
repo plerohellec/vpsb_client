@@ -7,4 +7,9 @@ manager.setup
 
 puts "csrf token=#{manager.csrf_token}"
 
-puts manager.create_trial
+t = manager.create_trial
+if t
+  puts "new trial = #{t.inspect}"
+else
+  puts "no trial was created"
+end

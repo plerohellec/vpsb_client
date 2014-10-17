@@ -6,6 +6,7 @@ module VpsbClient
         @application_id = params[:application_id]
         @plan_id = params[:plan_id]
         @hoster_id = params[:hoster_id]
+        @client_hostname = params[:client_hostname]
       end
 
       def url_path
@@ -13,7 +14,9 @@ module VpsbClient
       end
 
       def query_params
-        { hoster_id: @hoster_id,
+        { 
+          client_hostname: @client_hostname,
+          hoster_id: @hoster_id,
           application_id: @application_id,
           plan_id: @plan_id
         }
