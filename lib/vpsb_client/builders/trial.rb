@@ -1,19 +1,25 @@
 module VpsbClient
   module Builders
     class Trial
-      def initialize(config, hoster_id, application_id, plan_id)
+      def initialize(config, hoster_id=nil, application_id=nil, plan_id=nil)
         @config = config
         @hoster_id = hoster_id
         @application_id = application_id
         @plan_id = plan_id
       end
 
-      def params
+      def lookup_params
+        trial_params = {}
+        trial_params[:client_hostname] = @config['client_hostname']
+        trial_params
+      end
+
+      def create_params
         trial_params = {}
         trial_params[:started_at] = Time.now
-        trial_params[:hoster_id] = @hoster_id
-        trial_params[:application_id] = @application_id
-        trial_params[:plan_id] = @plan_id
+        trial_params[:hoster_id] = @hoster_id if @hoster_id
+        trial_params[:application_id] = @application_id if @application_id
+        trial_params[:plan_id] = @plan_id if @plan_id
 
         trial_params[:comment] = @config['comment']
 
