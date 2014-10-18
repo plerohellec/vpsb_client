@@ -20,6 +20,7 @@ module VpsbClient
 
     class GetRequest < Request
       def run
+        VpsbClient.logger.debug "class=#{self.class} url_path=#{url_path}"
         @http_client.get(self)
       end
     end

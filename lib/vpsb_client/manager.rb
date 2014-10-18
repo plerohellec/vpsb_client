@@ -36,18 +36,21 @@ module VpsbClient
       signin_request = Api::SigninRequest.new(@http_client, @config['email'], password, csrf_token)
       curl_response = signin_request.run
       http_response = Api::Response.new(curl_response)
+      @signed_in = true if http_response.success?
+      http_response
     end
 
     def signed_in?
+      return @signed_in if @signed_in
       id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', 'linode')
       curl_response = id_request.run
 
       begin
         http_response = Api::Response.new(curl_response)
       rescue Api::Response::NotAuthenticated => e
-        return false
+        return @signed_in = false
       end
-      true
+      @signed_in = true
     end
 
     def csrf_token
@@ -59,6 +62,10 @@ module VpsbClient
       csrf_token = Api::GetCsrfTokenRequest.csrf_token(curl_response)
       @csrf_token = csrf_token if signed_in? # the token changes after signin
       csrf_token
+    end
+
+    def csrf_token_block
+      Proc.new { csrf_token }
     end
 
     def create_trial
@@ -128,7 +135,7 @@ module VpsbClient
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |len|
         last_started_at = trial_last_metric(trial['id'], len)
-        uploader = MetricsUploader.new(@config, @http_client, trial, len, last_started_at, csrf_token)
+        uploader = MetricsUploader.new(@config, @http_client, trial, len, last_started_at, csrf_token_block)
         uploader.upload
         metric_ids += uploader.created_metric_ids
       end
