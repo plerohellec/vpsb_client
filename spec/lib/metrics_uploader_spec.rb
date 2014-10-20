@@ -7,7 +7,7 @@ module VpsbClient
         VpsbClient.logger = Logger.new('/dev/null')
         @curl = double('curl')
         @client = HttpClient.new(@curl, 'http', 'localhost')
-        @csrf_token = 'abc'
+        @csrf_token = Proc.new { 'abc' }
         @trial_id = 1
         @start = Time.new(2014, 10, 15, 20, 0, 0)
         @last_interval_started_at = @start
@@ -18,7 +18,7 @@ module VpsbClient
 
       it 'posts once for each interval' do
         @metric_params = { metric: {started_at: @start + @len, duration_seconds: @len, trial_id: @trial_id},
-                           authenticity_token: @csrf_token }
+                           authenticity_token: @csrf_token.call }
 
         curl_response = double('response')
         allow(curl_response).to receive(:response_code).and_return(200)

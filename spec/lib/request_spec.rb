@@ -44,7 +44,7 @@ module VpsbClient
       describe CreateTrialRequest do
         before :each do
           @config = { 'client_host' => 'test-001' , 'comment' => 'rien a dire' }
-          @params = Builders::Trial.new(@config, 1, 1, 1).params
+          @params = Builders::Trial.new(@config, 1, 1, 1).create_params
           @csrf_token = 'abc'
           @trial_params = { 'trial' => @params, 'authenticity_token' => @csrf_token }
         end
@@ -72,11 +72,11 @@ module VpsbClient
 
       describe GetCurrentTrialRequest do
         before :each do
-          @params = { application_id: 1, plan_id: 1, hoster_id: 1 }
+          @params = { client_hostname: 'test-001' }
         end
 
         it 'gets /admin/trials/current with ids' do
-          expect(@curl).to receive(:get).with('http://localhost/admin/trials/current.json?hoster_id=1&application_id=1&plan_id=1').once
+          expect(@curl).to receive(:get).with('http://localhost/admin/trials/current.json?client_hostname=test-001').once
 
           req = GetCurrentTrialRequest.new(@client, @params)
           req.run
