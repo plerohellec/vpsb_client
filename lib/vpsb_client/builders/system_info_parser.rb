@@ -45,7 +45,7 @@ module VpsbClient
     class UnameParser < SystemInfoParser
       attr_reader :kernel, :os_type
       # Linux lino 3.12.6-x86_64-linode36 #2 SMP Mon Jan 13 18:54:10 EST 2014 x86_64 x86_64 x86_64 GNU/Linux
-      REGEX = Regexp.new(/\w+ \w+ (?<kernel>\d+\.\d+\.\d+)-(?<type>[^\-]+)-/)
+      REGEX = Regexp.new(/\w+ \w+ (?<kernel>\d+\.\d+\.\d+)-(?<type>[^\-\s]+)[\-\s]/)
 
       def initialize
         super('uname -a')
