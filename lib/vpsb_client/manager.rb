@@ -2,6 +2,7 @@ require 'io/console'
 require 'logger'
 
 require File.join(File.expand_path('..', __FILE__), 'metrics_uploader')
+require File.join(File.expand_path('..', __FILE__), 'metrics_uploader_with_offset')
 
 module VpsbClient
   class Manager
@@ -139,6 +140,24 @@ module VpsbClient
         uploader.upload
         metric_ids += uploader.created_metric_ids
       end
+      metric_ids
+    end
+
+    def close_trial(trial)
+      unless enabled?
+        logger.debug "not running because vpsb_client is disabled"
+        return
+      end
+
+      sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
+      sar_manager.run
+
+      metric_ids = []
+      len = 604800
+      last_started_at = trial_last_metric(trial['id'], len)
+      uploader = MetricsUploaderWithOffset.new(@config, @http_client, trial, len, last_started_at, csrf_token_block)
+      uploader.upload
+      metric_ids += uploader.created_metric_ids
       metric_ids
     end
 

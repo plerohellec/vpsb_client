@@ -8,11 +8,12 @@ module VpsbClient
 
       VALID_METRIC_KEYS = [ :trial_id, :started_at, :duration_seconds, :num_requests, :resptime_total_ms, :resptime_db_ms, :resptime_view_ms, :cpu_idle, :cpu_steal, :iowait, :p50_total_ms, :p75_total_ms, :p95_total_ms, :p99_total_ms, :p75_iowait_pct, :p95_iowait_pct, :p99_iowait_pct,:p75_cpusteal_pct, :p95_cpusteal_pct, :p99_cpusteal_pct, :p75_cpuidle_pct, :p95_cpuidle_pct, :p99_cpuidle_pct ]
 
-      def initialize(sar_path, timing_path, oldest_valid_started_at, interval_length)
+      def initialize(sar_path, timing_path, oldest_valid_started_at, interval_length, builder_options={})
         @sar_path = sar_path
         @timing_path = timing_path
         @oldest_valid_started_at = oldest_valid_started_at
         @interval_length = interval_length
+        @builder_options = builder_options
       end
 
       def each(&block)
@@ -28,8 +29,8 @@ module VpsbClient
         timing_files = LogfileInterval::LogfileSet.new(timing_filenames, Datafiles::TimingLogParser, :desc)
 
         begin
-          sar_builder = LogfileInterval::IntervalBuilder.new(sar_files, Datafiles::FormattedSarLogParser, @interval_length)
-          timing_builder = LogfileInterval::IntervalBuilder.new(timing_files, Datafiles::TimingLogParser, @interval_length)
+          sar_builder = LogfileInterval::IntervalBuilder.new(sar_files, Datafiles::FormattedSarLogParser, @interval_length, @builder_options)
+          timing_builder = LogfileInterval::IntervalBuilder.new(timing_files, Datafiles::TimingLogParser, @interval_length, @builder_options)
 
           sar_enum = sar_builder.each_interval
           timing_enum = timing_builder.each_interval

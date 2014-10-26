@@ -14,13 +14,9 @@ module VpsbClient
     def upload
       @created_metric_ids = []
       if Time.now < oldest_valid_started_at + @len
-        VpsbClient.logger.debug "skipping #{@len} interval because too soon"
+        VpsbClient.logger.debug "skipping #{@len} interval because too soon (max=#{oldest_valid_started_at + @len} now=#{Time.now})"
         return
       end
-      builder = Builders::MetricsInterval.new(@config['formatted_sar_path'],
-                                              @config['timing_path'],
-                                              oldest_valid_started_at,
-                                              @len)
       builder.each do |interval|
         upload_request = Api::PostMetricRequest.new(@http_client, @trial['id'], interval, @csrf_token_proc.call)
         http_response = Api::Response.new(upload_request.run)
@@ -33,6 +29,14 @@ module VpsbClient
     end
 
     private
+
+    def builder
+      return @builder if @builder
+      @builder = Builders::MetricsInterval.new(@config['formatted_sar_path'],
+                                        @config['timing_path'],
+                                        oldest_valid_started_at,
+                                        @len)
+    end
 
     def oldest_valid_started_at
       return @oldest_valid_started_at if @oldest_valid_started_at
