@@ -168,6 +168,33 @@ module VpsbClient
           expect(PostMetricRequest.metric_id(resp)).to eq(8)
         end
       end
+
+      describe CloseTrialRequest do
+        before :each do
+          @csrf_token = 'abc'
+          @trial_id = 1
+          @params = { 'authenticity_token' => @csrf_token }
+        end
+
+        it 'posts /admin/metrics with length' do
+          expect(@curl).to receive(:put).with('http://localhost/admin/trials/1/close.json',
+                                              @params.to_json,
+                                              "application/json").once
+
+          req = CloseTrialRequest.new(@client, @trial_id, @csrf_token)
+          req.run
+        end
+
+        it 'parses the response from the server' do
+          curl_response = double('response')
+          allow(curl_response).to receive(:response_code).and_return(200)
+          allow(curl_response).to receive(:body_str).and_return('')
+          allow(curl_response).to receive(:content_type).and_return("application/json")
+          expect(@curl).to receive(:put).and_return(curl_response)
+          req = CloseTrialRequest.new(@client, @trial_id, @csrf_token)
+          resp = Response.new(req.run)
+        end
+      end
     end
   end
 end

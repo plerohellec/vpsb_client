@@ -6,7 +6,7 @@ require File.join(File.expand_path('..', __FILE__), 'metrics_uploader_with_offse
 
 module VpsbClient
   class Manager
-    attr_reader :http_client
+    attr_reader :http_client, :logger
 
     class LastMetricNotFoundError < StandardError; end
 
@@ -158,7 +158,11 @@ module VpsbClient
       uploader = MetricsUploaderWithOffset.new(@config, @http_client, trial, len, last_started_at, csrf_token_block)
       uploader.upload
       metric_ids += uploader.created_metric_ids
-      metric_ids
+      logger.debug "Created metric ids: #{metric_ids.inspect}"
+
+      close_request = Api::CloseTrialRequest.new(@http_client, trial['id'], csrf_token)
+      http_response = Api::Response.new(close_request.run)
+      logger.debug "close request response code = #{http_response.code}"
     end
 
   end

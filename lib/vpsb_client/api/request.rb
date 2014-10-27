@@ -13,6 +13,10 @@ module VpsbClient
         {}
       end
 
+      def put_params
+        {}
+      end
+
       def accept
         'application/json'
       end
@@ -37,6 +41,18 @@ module VpsbClient
 
       def content_type
         'application/x-www-form-urlencoded'
+      end
+    end
+
+
+    class PutRequest < Request
+      def initialize(http_client, csrf_token)
+        super(http_client)
+        @csrf_token = csrf_token
+      end
+
+      def run
+        @http_client.put(self, @csrf_token)
       end
     end
   end

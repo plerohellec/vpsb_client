@@ -19,5 +19,4 @@ puts "trial_id=#{trial_id}"
 
 trial = manager.current_trial
 metric_ids = manager.close_trial(trial)
-puts "metric_ids=#{metric_ids.inspect}"
 

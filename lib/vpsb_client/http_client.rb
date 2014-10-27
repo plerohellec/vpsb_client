@@ -15,6 +15,11 @@ module VpsbClient
       @curl_wrapper.post(url(request), post_params, request.content_type)
     end
 
+    def put(request, csrf_token = nil)
+      put_params = put_params(request, csrf_token, request.content_type)
+      @curl_wrapper.put(url(request), put_params, request.content_type)
+    end
+
     private
 
     def url(request)
@@ -39,6 +44,7 @@ module VpsbClient
         post_params # but curl does the www form encoding
       end
     end
+    alias_method :put_params, :post_params
 
     def url_encode(params)
       return '' if params.empty?
