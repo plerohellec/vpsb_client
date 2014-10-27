@@ -163,6 +163,7 @@ module VpsbClient
       close_request = Api::CloseTrialRequest.new(@http_client, trial['id'], csrf_token)
       http_response = Api::Response.new(close_request.run)
       logger.debug "close request response code = #{http_response.code}"
+      http_response
     end
 
   end
