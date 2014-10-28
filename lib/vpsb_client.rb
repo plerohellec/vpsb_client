@@ -26,6 +26,10 @@ module VpsbClient
   end
 
   def self.logger
-    @@logger
+    if defined?(@@logger)
+      @@logger
+    else
+      Logger.new(STDOUT)
+    end
   end
 end
