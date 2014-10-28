@@ -22,6 +22,9 @@ module VpsbClient
         sar_filenames = Dir.glob("#{@sar_path}/formatted_sa*")
         timing_filenames = Dir.glob("#{@timing_path}/timings.log*")
 
+        sar_filenames.reject!    { |f| f =~ /\.gz$/ }
+        timing_filenames.reject! { |f| f =~ /\.gz$/ }
+
         raise FileNotFound, "No file matching #{@sar_path}/formatted_sa*" unless sar_filenames.any?
         raise FileNotFound, "No file matching #{@timing_path}/timings.log*" unless timing_filenames.any?
 
