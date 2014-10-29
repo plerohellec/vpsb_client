@@ -29,7 +29,7 @@ module VpsbClient
     if defined?(@@logger)
       @@logger
     else
-      @@logger = Logger.new(STDOUT)
+      @@logger = Logger.new('/dev/null')
     end
   end
 end

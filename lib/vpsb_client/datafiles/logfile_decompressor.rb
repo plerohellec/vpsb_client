@@ -1,12 +1,16 @@
 module VpsbClient
   module Datafiles
-    class TimingDecompressor
+    class LogfileDecompressor
       class NotFoundError < StandardError; end
 
-      def initialize(orig_path, target_path)
+      UNLIMITED_ROTATION_ID = 10000
+
+      def initialize(orig_path, target_path, filename_prefix, options = {})
         raise NotFoundError, "#{orig_path} is not a directory" unless File.directory?(orig_path)
         @orig_path = orig_path
         @target_path = target_path
+        @filename_prefix = filename_prefix
+        @max_rotation_id = options.fetch(:max_rotation_id, UNLIMITED_ROTATION_ID)
       end
 
       def run
@@ -16,7 +20,7 @@ module VpsbClient
       private
 
       def unzip
-        timing_logs = Dir.glob("#{@orig_path}/timings.log.*.gz")
+        timing_logs = Dir.glob("#{@orig_path}/#{@filename_prefix}.log.*.gz")
         VpsbClient.logger.debug "Will gunzip #{timing_logs.inspect}"
         timing_logs.each do |zipfile|
           unzip_file(zipfile)
@@ -24,8 +28,9 @@ module VpsbClient
       end
 
       def unzip_file(zipfile)
-        if res = /[^\/]*\/(?<name>[^\/]+)\.gz$/.match(zipfile)
-          unzipped_file = "#{@target_path}/#{res[:name]}"
+        if md = /[^\/]*\/(?<name>[^\/]+)\.(?<num>\d+)\.gz$/.match(zipfile)
+          return if md[:num].to_i > @max_rotation_id
+          unzipped_file = "#{@target_path}/#{md[:name]}.#{md[:num]}"
         else
           raise "Cannot convert to unzipped filename #{zipfile}"
         end
