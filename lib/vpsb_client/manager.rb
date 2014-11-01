@@ -152,6 +152,9 @@ module VpsbClient
       sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
       sar_manager.run
 
+      logfile_decompressor = Datafiles::LogfileDecompressor.new(@config['timing_path'], @config['timing_path'], :filename_prefix => 'timings')
+      logfile_decompressor.run
+
       metric_ids = []
       len = 604800
       last_started_at = trial_last_metric(trial['id'], len)

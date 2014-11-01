@@ -5,11 +5,11 @@ module VpsbClient
 
       UNLIMITED_ROTATION_ID = 10000
 
-      def initialize(orig_path, target_path, filename_prefix, options = {})
+      def initialize(orig_path, target_path, options = {})
         raise NotFoundError, "#{orig_path} is not a directory" unless File.directory?(orig_path)
         @orig_path = orig_path
         @target_path = target_path
-        @filename_prefix = filename_prefix
+        @filename_prefix = options.fetch(:filename_prefix, '*')
         @max_rotation_id = options.fetch(:max_rotation_id, UNLIMITED_ROTATION_ID)
       end
 
