@@ -1,8 +1,8 @@
 require 'io/console'
 require 'logger'
 
-require File.join(File.expand_path('..', __FILE__), 'metrics_uploader')
-require File.join(File.expand_path('..', __FILE__), 'metrics_uploader_with_offset')
+require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/aligned"
+require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/with_offset"
 
 module VpsbClient
   class Manager

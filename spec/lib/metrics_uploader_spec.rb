@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module VpsbClient
-  describe MetricsUploader do
+  describe MetricsUploader::Aligned do
     describe :upload do
       before :each do
         VpsbClient.logger = Logger.new('/dev/null')
@@ -31,14 +31,14 @@ module VpsbClient
         allow(Time).to receive(:now).and_return(@start + 2 * @len)
         allow_any_instance_of(Builders::MetricsInterval).to receive(:each).and_yield(interval1)
 
-        uploader = MetricsUploader.new(@config, @client, @trial, @len, @last_interval_started_at, @csrf_token)
+        uploader = MetricsUploader::Aligned.new(@config, @client, @trial, @len, @last_interval_started_at, @csrf_token)
         uploader.upload
       end
 
       it 'does no compute intervals when it is too early' do
         expect(Builders::MetricsInterval).to receive(:new).never
         allow(Time).to receive(:now).and_return(@start + 0.9 * @len)
-        uploader = MetricsUploader.new(@config, @client, @trial, @len, @last_interval_started_at, @csrf_token)
+        uploader = MetricsUploader::Aligned.new(@config, @client, @trial, @len, @last_interval_started_at, @csrf_token)
         uploader.upload
       end
     end
