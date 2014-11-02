@@ -4,6 +4,7 @@ require 'logger'
 require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/aligned"
 require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/with_offset"
 
+
 module VpsbClient
   class Manager
     attr_reader :http_client, :logger
@@ -134,9 +135,9 @@ module VpsbClient
       sar_manager.run
 
       metric_ids = []
-      [ 10*60, 3600, 86400 ].each do |len|
-        last_started_at = trial_last_metric(trial['id'], len)
-        uploader = MetricsUploader.new(@config, @http_client, trial, len, last_started_at, csrf_token_block)
+      [ 10*60, 3600, 86400 ].each do |interval_length|
+        last_started_at = trial_last_metric(trial['id'], interval_length)
+        uploader = MetricsUploader::Aligned.new(@config, @http_client, trial, interval_length, last_started_at, csrf_token_block)
         uploader.upload
         metric_ids += uploader.created_metric_ids
       end
@@ -156,9 +157,9 @@ module VpsbClient
       logfile_decompressor.run
 
       metric_ids = []
-      len = 604800
-      last_started_at = trial_last_metric(trial['id'], len)
-      uploader = MetricsUploaderWithOffset.new(@config, @http_client, trial, len, last_started_at, csrf_token_block)
+      interval_length = 604800
+      last_started_at = trial_last_metric(trial['id'], interval_length)
+      uploader = MetricsUploader::WithOffset.new(@config, @http_client, trial, interval_length, last_started_at, csrf_token_block)
       uploader.upload
       metric_ids += uploader.created_metric_ids
       logger.debug "Created metric ids: #{metric_ids.inspect}"
