@@ -31,14 +31,18 @@ module VpsbClient
         allow(Time).to receive(:now).and_return(@start + 2 * @len)
         allow_any_instance_of(Builders::MetricsInterval).to receive(:each).and_yield(interval1)
 
-        uploader = MetricsUploader::Aligned.new(@config, @client, @trial, @len, @last_interval_started_at, @csrf_token)
+        interval_start_time = double('AlignedIntervalStartTime')
+        allow(interval_start_time).to receive(:to_time).and_return(@last_interval_started_at)
+        allow(interval_start_time).to receive(:offset).and_return(0)
+
+        uploader = MetricsUploader::Aligned.new(@config, @client, @trial_id, @len, interval_start_time, @csrf_token)
         uploader.upload
       end
 
       it 'does no compute intervals when it is too early' do
         expect(Builders::MetricsInterval).to receive(:new).never
         allow(Time).to receive(:now).and_return(@start + 0.9 * @len)
-        uploader = MetricsUploader::Aligned.new(@config, @client, @trial, @len, @last_interval_started_at, @csrf_token)
+        uploader = MetricsUploader::Aligned.new(@config, @client, @trial['id'], @len, @last_interval_started_at, @csrf_token)
         uploader.upload
       end
     end
