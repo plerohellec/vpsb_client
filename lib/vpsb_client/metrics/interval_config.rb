@@ -9,11 +9,11 @@ module VpsbClient
 
       def aligned?
         if @existing_start_time
-          :aligned
+          false
         elsif @interval_length < 86400
-          :aligned
+          true
         else
-          :unaligned
+          false
         end
       end
 
