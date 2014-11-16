@@ -10,6 +10,14 @@ module VpsbClient
         end
       end
 
+      describe :min_end_time do
+        it 'is min_start_time + length' do
+          t = Time.new(2014, 11, 15, 20, 0, 0)
+          ic = IntervalConfig.new(nil, t, 3600)
+          expect(ic.min_end_time).to eq(ic.min_start_time + 3600)
+        end
+      end
+
       context 'with previous start time' do
         before :each do
           @previous_start_time = Time.new(2014, 11, 15, 20, 0, 0)
