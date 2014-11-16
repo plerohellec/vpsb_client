@@ -136,6 +136,11 @@ module VpsbClient
 
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |interval_length|
+        interval_config = Metrics::IntervalConfig.new(trial['started_at'], last_started_at, interval_length)
+        if interval_config.min_end_time > Time.now
+          logger.info "Skipping #{interval_length} because too early (min_end_time=#{interval_config.min_end_time})"
+          next
+        end
         metrics_manager = metrics_manager(trial, interval_length)
         metrics_manager.run
         metric_ids += metrics_manager.created_metric_ids
