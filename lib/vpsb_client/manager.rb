@@ -136,12 +136,13 @@ module VpsbClient
 
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |interval_length|
+        last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
         interval_config = Metrics::IntervalConfig.new(trial['started_at'], last_started_at, interval_length)
         if interval_config.min_end_time > Time.now
           logger.info "Skipping #{interval_length} because too early (min_end_time=#{interval_config.min_end_time})"
           next
         end
-        metrics_manager = metrics_manager(trial, interval_length)
+        metrics_manager = metrics_manager(trial['id'], interval_config, last_started_at)
         metrics_manager.run
         metric_ids += metrics_manager.created_metric_ids
       end
@@ -162,7 +163,10 @@ module VpsbClient
 
       metric_ids = []
       interval_length = 604800
-      metrics_manager = metrics_manager(trial, interval_length)
+      last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
+      last_started_at ||= Time.now - interval_length
+      interval_config = Metrics::IntervalConfig.new(trial['started_at'], last_started_at, interval_length)
+      metrics_manager = metrics_manager(trial['id'], interval_config, last_started_at)
       metrics_manager.run
       metric_ids += metrics_manager.created_metric_ids
       logger.debug "Created metric ids: #{metric_ids.inspect}"
@@ -173,12 +177,10 @@ module VpsbClient
       http_response
     end
 
-    def metrics_manager(trial, interval_length)
-      last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
-      interval_config = Metrics::IntervalConfig.new(trial['started_at'], last_started_at, interval_length)
+    def metrics_manager(trial_id, interval_config, last_started_at)
       min_start_time = interval_config.min_start_time
-      builder         = Metrics::IntervalBuilder.new(@config['formatted_sar_path'], @config['timing_path'], min_start_time, interval_length)
-      uploader        = Metrics::Uploader.new(@http_client, csrf_token_block, trial['id'])
+      builder         = Metrics::IntervalBuilder.new(@config['formatted_sar_path'], @config['timing_path'], min_start_time, interval_config.length)
+      uploader        = Metrics::Uploader.new(@http_client, csrf_token_block, trial_id)
 
       Metrics::Manager.new(builder, uploader, min_start_time)
     end
