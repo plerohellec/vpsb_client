@@ -7,10 +7,10 @@ module VpsbClient
     class Manager
       attr_reader :created_metric_ids
 
-      def initialize(http_client, csrf_token_proc, trial_id, sar_path, timing_path, interval_config)
-        @min_start_time = interval_config.min_start_time
-        @builder = IntervalBuilder.new(sar_path, timing_path, @min_start_time, interval_config.length)
-        @uploader = Uploader.new(http_client, csrf_token_proc, trial_id)
+      def initialize(builder, uploader, min_start_time)
+        @min_start_time = min_start_time
+        @builder = builder
+        @uploader = uploader
         @created_metric_ids = []
       end
 
