@@ -21,6 +21,7 @@ module VpsbClient
         @parsed_response ||= JSON.parse(@body_str)
       end
 
+      private
       def success?
         [200, 201, 204, 302].include?(@code)
       end

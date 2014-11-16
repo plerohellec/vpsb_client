@@ -91,7 +91,7 @@ module VpsbClient
       Api::GetCurrentTrialRequest.trial(http_response)
     end
 
-    def trial_last_metric(trial_id, length)
+    def trial_last_metric_started_at(trial_id, length)
       current_trial_request = Api::GetTrialLastMetricRequest.new(@http_client, { trial_id: trial_id, length: length})
       curl_response = current_trial_request.run
       http_response = Api::Response.new(curl_response)
@@ -136,9 +136,11 @@ module VpsbClient
 
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |interval_length|
-        last_started_at = trial_last_metric(trial['id'], interval_length)
-        uploader = MetricsUploader::Aligned.new(@config, @http_client, trial, interval_length, last_started_at, csrf_token_block)
-        uploader.upload
+        last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
+        interval_config = Metrics::IntervalConfig.new(trial['started_at'], last_started_at, interval_length)
+        uploader = Metrics::Manager.new(@http_client, csrf_token_block, trial['id'], @config['formatted_sar_path'], @config['timing_path'], interval_config)
+        uploader.run
+
         metric_ids += uploader.created_metric_ids
       end
       metric_ids
@@ -158,9 +160,10 @@ module VpsbClient
 
       metric_ids = []
       interval_length = 604800
-      last_started_at = trial_last_metric(trial['id'], interval_length)
-      uploader = MetricsUploader::WithOffset.new(@config, @http_client, trial, interval_length, last_started_at, csrf_token_block)
-      uploader.upload
+      last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
+      interval_config = Metrics::IntervalConfig.new(trial['started_at'], last_started_at, interval_length)
+      uploader = Metrics::Manager.new(@http_client, csrf_token_block, trial['id'], @config['formatted_sar_path'], @config['timing_path'], interval_config)
+      uploader.run
       metric_ids += uploader.created_metric_ids
       logger.debug "Created metric ids: #{metric_ids.inspect}"
 
