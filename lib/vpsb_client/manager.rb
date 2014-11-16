@@ -1,8 +1,8 @@
 require 'io/console'
 require 'logger'
 
-require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/aligned"
-require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/with_offset"
+require "#{VPSB_BASE_PATH}/vpsb_client/metrics/manager"
+
 
 
 module VpsbClient

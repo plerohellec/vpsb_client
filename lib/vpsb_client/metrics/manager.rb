@@ -1,3 +1,7 @@
+require "#{VPSB_BASE_PATH}/vpsb_client/metrics/interval_builder"
+require "#{VPSB_BASE_PATH}/vpsb_client/metrics/interval_config"
+require "#{VPSB_BASE_PATH}/vpsb_client/metrics/uploader"
+
 module VpsbClient
   module Metrics
     class Manager
