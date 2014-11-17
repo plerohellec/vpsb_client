@@ -21,6 +21,7 @@ module VpsbClient
         end
 
         @builder.each do |metric|
+          VpsbClient.logger.debug "metric[:started_at]=#{metric[:started_at]} @interval_config.min_start_time=#{@interval_config.min_start_time}"
           break if metric[:started_at] < @interval_config.min_start_time
           @created_metric_ids << @uploader.upload(metric)
         end
