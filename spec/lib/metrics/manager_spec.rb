@@ -5,10 +5,15 @@ module VpsbClient
     describe Manager do
       before :each do
         @min_start_time = Time.new(2014, 11, 15, 20, 0, 0)
+        @length = 3600
         @builder = double('builder')
         @uploader = double('uploader')
+        @interval_config = double('config')
+        allow(@interval_config).to receive(:length).and_return(@length)
+        allow(@interval_config).to receive(:min_start_time).and_return(@min_start_time)
+        allow(@interval_config).to receive(:min_end_time).and_return(@min_start_time + @length)
 
-        @manager = Manager.new(@builder, @uploader, @min_start_time)
+        @manager = Manager.new(@builder, @uploader, @interval_config)
       end
 
       describe :run do
