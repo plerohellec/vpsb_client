@@ -20,8 +20,6 @@ require "#{VPSB_BASE_PATH}/vpsb_client/builders/trial"
 require "#{VPSB_BASE_PATH}/vpsb_client/builders/metrics_interval"
 require "#{VPSB_BASE_PATH}/vpsb_client/datafiles/sar_manager"
 require "#{VPSB_BASE_PATH}/vpsb_client/datafiles/logfile_decompressor"
-require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/aligned"
-require "#{VPSB_BASE_PATH}/vpsb_client/metrics_uploader/with_offset"
 
 module VpsbClient
   def self.logger=(logger)
