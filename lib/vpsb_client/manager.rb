@@ -142,12 +142,12 @@ module VpsbClient
           force = true
         else
           trial_started_at = DateTime.parse(trial['started_at']).to_time
-          logger.debug "Vpsb upload_metrics: length=#{interval_length} last_started_at=#{last_started_at}"
-          start_time = last_started_at
+          start_time = trial_started_at
           force = false
         end
+        logger.debug "[vpsb] upload_metrics: length=#{interval_length} start_time=#{start_time} force=#{force}"
         interval_config = Metrics::IntervalConfig.new(start_time, interval_length, force: force)
-        metrics_manager = metrics_manager(trial['id'], interval_config, last_started_at)
+        metrics_manager = metrics_manager(trial['id'], interval_config)
         metrics_manager.run
         metric_ids += metrics_manager.created_metric_ids
       end
@@ -156,7 +156,7 @@ module VpsbClient
 
     def close_trial(trial)
       unless enabled?
-        logger.debug "not running because vpsb_client is disabled"
+        logger.debug "[vpsb] not running because vpsb_client is disabled"
         return
       end
 
@@ -169,17 +169,22 @@ module VpsbClient
       metric_ids = []
       interval_length = 604800
       last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
-      last_started_at ||= Time.now - interval_length
-      start_time = last_started_at + interval_length
+      if last_started_at
+        start_time = last_started_at + interval_length
+      else
+        logger.debug "[vpsb] close_trial - no last metric found"
+        start_time = Time.now - interval_length
+      end
+      logger.debug "[vpsb] close_trial - length=#{interval_length} start_time=#{start_time} force=false"
       interval_config = Metrics::IntervalConfig.new(start_time, interval_length, force: true)
-      metrics_manager = metrics_manager(trial['id'], interval_config, last_started_at)
+      metrics_manager = metrics_manager(trial['id'], interval_config)
       metrics_manager.run
       metric_ids += metrics_manager.created_metric_ids
-      logger.debug "Created metric ids: #{metric_ids.inspect}"
+      logger.debug "[vpsb] Created metric ids: #{metric_ids.inspect}"
 
       close_request = Api::CloseTrialRequest.new(@http_client, trial['id'], csrf_token)
       http_response = Api::Response.new(close_request.run)
-      logger.debug "close request response code = #{http_response.code}"
+      logger.debug "[vpsb] close request response code = #{http_response.code}"
       http_response
     end
 
