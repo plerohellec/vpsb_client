@@ -137,10 +137,16 @@ module VpsbClient
       metric_ids = []
       [ 10*60, 3600, 86400 ].each do |interval_length|
         last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
-        forced_start_time = last_started_at + interval_length if last_started_at
-        trial_started_at = DateTime.parse(trial['started_at']).to_time
-        logger.debug "Vpsb upload_metrics: length=#{interval_length} last_started_at=#{last_started_at}"
-        interval_config = Metrics::IntervalConfig.new(trial_started_at, forced_start_time, interval_length)
+        if last_started_at
+          start_time = last_started_at + interval_length
+          force = true
+        else
+          trial_started_at = DateTime.parse(trial['started_at']).to_time
+          logger.debug "Vpsb upload_metrics: length=#{interval_length} last_started_at=#{last_started_at}"
+          start_time = last_started_at
+          force = false
+        end
+        interval_config = Metrics::IntervalConfig.new(start_time, interval_length, force: force)
         metrics_manager = metrics_manager(trial['id'], interval_config, last_started_at)
         metrics_manager.run
         metric_ids += metrics_manager.created_metric_ids
@@ -163,10 +169,9 @@ module VpsbClient
       metric_ids = []
       interval_length = 604800
       last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
-      forced_start_time = last_started_at + interval_length if last_started_at
-      trial_started_at = DateTime.parse(trial['started_at']).to_time
       last_started_at ||= Time.now - interval_length
-      interval_config = Metrics::IntervalConfig.new(trial_started_at, forced_start_time, interval_length)
+      start_time = last_started_at + interval_length
+      interval_config = Metrics::IntervalConfig.new(start_time, interval_length, force: true)
       metrics_manager = metrics_manager(trial['id'], interval_config, last_started_at)
       metrics_manager.run
       metric_ids += metrics_manager.created_metric_ids
@@ -178,7 +183,7 @@ module VpsbClient
       http_response
     end
 
-    def metrics_manager(trial_id, interval_config, last_started_at)
+    def metrics_manager(trial_id, interval_config)
       min_start_time = interval_config.min_start_time
       builder         = Metrics::IntervalBuilder.new(@config['formatted_sar_path'], @config['timing_path'], min_start_time, interval_config.length)
       uploader        = Metrics::Uploader.new(@http_client, csrf_token_block, trial_id)

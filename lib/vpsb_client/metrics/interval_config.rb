@@ -1,14 +1,14 @@
 module VpsbClient
   module Metrics
     class IntervalConfig
-      def initialize(fallback_start_time, forced_start_time, interval_length)
-        @fallback_start_time = fallback_start_time
-        @forced_start_time = forced_start_time
+      def initialize(start_time, interval_length, options={})
+        @start_time = start_time
         @interval_length = interval_length
+        @force = options.fetch(:force, false)
       end
 
       def aligned?
-        if @forced_start_time
+        if @force
           false
         elsif @interval_length < 86400
           true
@@ -18,12 +18,12 @@ module VpsbClient
       end
 
       def min_start_time
-        if @forced_start_time
-          @forced_start_time
+        if @force
+          @start_time
         elsif aligned?
-          lower_boundary_time(@fallback_start_time)
+          lower_boundary_time(@start_time)
         else
-          @fallback_start_time
+          @start_time
         end
       end
 
