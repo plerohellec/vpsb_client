@@ -11,60 +11,60 @@ module VpsbClient
       end
 
       describe :min_end_time do
-        it 'is min_start_time + length' do
+        it 'is min_start_time' do
           t = Time.new(2014, 11, 15, 20, 0, 0)
           ic = IntervalConfig.new(nil, t, 3600)
           expect(ic.min_end_time).to eq(ic.min_start_time + 3600)
         end
       end
 
-      context 'with previous start time' do
+      context 'with forced start time' do
         before :each do
-          @previous_start_time = Time.new(2014, 11, 15, 20, 0, 0)
+          @forced_start_time = Time.new(2014, 11, 15, 20, 0, 0)
           @fallback_start_time = nil
         end
 
         context 'with short interval length' do
           before :each do
             @length = 60
-            @ic = IntervalConfig.new(@fallback_start_time, @previous_start_time, @length)
+            @ic = IntervalConfig.new(@fallback_start_time, @forced_start_time, @length)
           end
 
           it 'aligned? is false' do
             expect(@ic.aligned?).to eq(false)
           end
 
-          it 'min_start_time is previous_start_time + length' do
-            expect(@ic.min_start_time).to eq(@previous_start_time + @length)
+          it 'min_start_time is forced_start_time' do
+            expect(@ic.min_start_time).to eq(@forced_start_time)
           end
         end
 
         context 'with long interval length' do
           before :each do
             @length = 604800
-            @ic = IntervalConfig.new(@fallback_start_time, @previous_start_time, @length)
+            @ic = IntervalConfig.new(@fallback_start_time, @forced_start_time, @length)
           end
 
           it 'aligned? is false' do
             expect(@ic.aligned?).to eq(false)
           end
 
-          it 'min_start_time is previous_start_time + length' do
-            expect(@ic.min_start_time).to eq(@previous_start_time + @length)
+          it 'min_start_time is forced_start_time' do
+            expect(@ic.min_start_time).to eq(@forced_start_time)
           end
         end
       end
 
-      context 'without previous start time' do
+      context 'without forced start time' do
         before :each do
-          @previous_start_time = nil
+          @forced_start_time = nil
           @fallback_start_time = Time.new(2014, 11, 15, 20, 0, 0)
         end
 
         context 'with short interval length' do
           before :each do
             @length = 60
-            @ic = IntervalConfig.new(@fallback_start_time, @previous_start_time, @length)
+            @ic = IntervalConfig.new(@fallback_start_time, @forced_start_time, @length)
           end
 
           it 'aligned? is true' do
@@ -79,7 +79,7 @@ module VpsbClient
         context 'with long interval length' do
           before :each do
             @length = 604800
-            @ic = IntervalConfig.new(@fallback_start_time, @previous_start_time, @length)
+            @ic = IntervalConfig.new(@fallback_start_time, @forced_start_time, @length)
           end
 
           it 'aligned? is false' do
