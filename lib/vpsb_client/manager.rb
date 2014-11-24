@@ -2,12 +2,11 @@ require 'io/console'
 require 'logger'
 
 require "#{VPSB_BASE_PATH}/vpsb_client/metrics/manager"
-
-
+require "#{VPSB_BASE_PATH}/vpsb_client/client/upload_metrics"
 
 module VpsbClient
   class Manager
-    attr_reader :http_client, :logger
+    attr_reader :http_client, :logger, :config
 
     class LastMetricNotFoundError < StandardError; end
 
@@ -125,34 +124,7 @@ module VpsbClient
       @plan_id = id
     end
 
-    def upload_metrics(trial)
-      unless enabled?
-        logger.debug "not running because vpsb_client is disabled"
-        return
-      end
-
-      sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
-      sar_manager.run
-
-      metric_ids = []
-      [ 10*60, 3600, 86400 ].each do |interval_length|
-        last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
-        if last_started_at
-          start_time = last_started_at + interval_length
-          force = true
-        else
-          trial_started_at = DateTime.parse(trial['started_at']).to_time
-          start_time = trial_started_at
-          force = false
-        end
-        logger.debug "[vpsb] upload_metrics: length=#{interval_length} start_time=#{start_time} force=#{force}"
-        interval_config = Metrics::IntervalConfig.new(start_time, interval_length, force: force)
-        metrics_manager = metrics_manager(trial['id'], interval_config)
-        metrics_manager.run
-        metric_ids += metrics_manager.created_metric_ids
-      end
-      metric_ids
-    end
+    include Client::UploadMetrics
 
     def close_trial(trial)
       unless enabled?
@@ -160,12 +132,8 @@ module VpsbClient
         return
       end
 
-      sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
-      sar_manager.run
-
-      logfile_decompressor = Datafiles::LogfileDecompressor.new(@config['timing_path'], @config['timing_path'], :filename_prefix => 'timings')
-      logfile_decompressor.run
-
+      prepare_logfiles
+      
       metric_ids = []
       interval_length = 604800
       last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
@@ -187,6 +155,17 @@ module VpsbClient
       logger.debug "[vpsb] close request response code = #{http_response.code}"
       http_response
     end
+
+    private
+
+    def prepare_logfiles
+      sar_manager = Datafiles::SarManager.new(@config['sar_path'], @config['formatted_sar_path'])
+      sar_manager.run
+
+      logfile_decompressor = Datafiles::LogfileDecompressor.new(@config['timing_path'], @config['timing_path'], :filename_prefix => 'timings')
+      logfile_decompressor.run
+    end
+
 
     def metrics_manager(trial_id, interval_config)
       min_start_time = interval_config.min_start_time
