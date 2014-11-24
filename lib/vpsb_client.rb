@@ -17,7 +17,6 @@ require "#{VPSB_BASE_PATH}/vpsb_client/api/post_metric_request"
 require "#{VPSB_BASE_PATH}/vpsb_client/api/close_trial_request"
 require "#{VPSB_BASE_PATH}/vpsb_client/builders/system_info_parser"
 require "#{VPSB_BASE_PATH}/vpsb_client/builders/trial"
-require "#{VPSB_BASE_PATH}/vpsb_client/builders/metrics_interval"
 require "#{VPSB_BASE_PATH}/vpsb_client/datafiles/sar_manager"
 require "#{VPSB_BASE_PATH}/vpsb_client/datafiles/logfile_decompressor"
 
