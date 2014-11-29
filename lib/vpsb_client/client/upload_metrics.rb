@@ -11,7 +11,7 @@ module VpsbClient
 
         metric_ids = []
         [ 10*60, 3600, 86400 ].each do |interval_length|
-          upload_for_interval_Length(trial, interval_length)
+          metric_ids += (trial, interval_length)
         end
         metric_ids
       end
@@ -32,7 +32,7 @@ module VpsbClient
         interval_config = Metrics::IntervalConfig.new(start_time, interval_length, force: force)
         metrics_manager = metrics_manager(trial['id'], interval_config)
         metrics_manager.run
-        metric_ids += metrics_manager.created_metric_ids
+        metrics_manager.created_metric_ids
       end
     end
   end
