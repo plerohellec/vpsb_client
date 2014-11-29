@@ -11,7 +11,7 @@ module VpsbClient
 
         metric_ids = []
         [ 10*60, 3600, 86400 ].each do |interval_length|
-          metric_ids += (trial, interval_length)
+          metric_ids += upload_for_interval_Length(trial, interval_length)
         end
         metric_ids
       end
