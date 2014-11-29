@@ -23,11 +23,18 @@ module VpsbClient
     end
 
     describe CpuinfoParser do
+      before :each do
+        @mp = CpuinfoParser.new
+        @mp.parse
+      end
+
       it 'finds the model and number of processors' do
-        mp = CpuinfoParser.new
-        mp.parse
-        expect(mp.model).to match(/^.*CPU.*GHz$/)
-        expect(mp.num).to be_an_instance_of(Fixnum)
+        expect(@mp.model).to match(/^.*CPU.*GHz$/)
+        expect(@mp.num).to be_an_instance_of(Fixnum)
+      end
+
+      it 'finds the cpu speed' do
+        expect(@mp.mhz).to be_an_instance_of(Fixnum)
       end
     end
 

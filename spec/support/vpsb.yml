@@ -10,4 +10,5 @@ sar_path: /var/log/sysstat
 formatted_sar_path: /tmp
 timing_path: /theapp/log
 client_hostname: test-001
+datacenter: Sim City
 enabled: true

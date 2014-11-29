@@ -59,7 +59,7 @@ module VpsbClient
     end
 
     class CpuinfoParser < SystemInfoParser
-      attr_reader :model, :num
+      attr_reader :model, :num, :mhz
       # model name  : Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz
       REGEX = Regexp.new('^model name\s*:\s*(?<model>.*$)')
 
@@ -71,6 +71,7 @@ module VpsbClient
         matches = find_matches(REGEX)
         @model = matches[:model]
         parse_num_processors
+        parse_cpu_speed
       end
 
       private
@@ -81,6 +82,11 @@ module VpsbClient
             @num += 1
           end
         end
+      end
+
+      def parse_cpu_speed
+        matches = find_matches(/^cpu MHz\s*:\s*(?<mhz>\d+)/)
+        @mhz = matches[:mhz].to_i
       end
     end
 

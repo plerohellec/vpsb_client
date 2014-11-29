@@ -27,6 +27,7 @@ module VpsbClient
         cpuinfo_parser.parse
         trial_params[:cpu_type] = cpuinfo_parser.model
         trial_params[:num_cores] = cpuinfo_parser.num
+        trial_params[:cpu_mhz] = cpuinfo_parser.mhz
 
         issue_parser = Builders::IssueParser.new
         issue_parser.parse
@@ -43,6 +44,8 @@ module VpsbClient
         trial_params[:client_hostname] = @config['client_hostname']
         trial_params[:ruby_version] = RUBY_VERSION
         trial_params[:rails_version] = defined?(Rails) ? Rails.version : nil
+
+        trial_params[:datacenter] = @config['datacenter']
 
         trial_params
       end
