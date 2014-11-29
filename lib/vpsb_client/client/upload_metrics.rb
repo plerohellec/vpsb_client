@@ -11,14 +11,14 @@ module VpsbClient
 
         metric_ids = []
         [ 10*60, 3600, 86400 ].each do |interval_length|
-          metric_ids += upload_for_interval_Length(trial, interval_length)
+          metric_ids += upload_for_interval_length(trial, interval_length)
         end
         metric_ids
       end
 
       private
 
-      def upload_for_interval_Length(trial, interval_length)
+      def upload_for_interval_length(trial, interval_length)
         last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
         if last_started_at
           start_time = last_started_at + interval_length
