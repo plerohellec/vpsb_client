@@ -36,7 +36,7 @@ class PxxBuckets
     i = 0
     @ary = [ 0 ]
     ranges = options.fetch(:ranges)
-    ranges.keys.each do |ceiling|
+    ranges.keys.sort.each do |ceiling|
       while(i < ceiling)
         i += ranges[ceiling]
         i = i.round(2) if i.is_a?(Float) # float decimal errors

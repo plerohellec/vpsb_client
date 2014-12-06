@@ -9,8 +9,8 @@ module VpsbClient
       set_regex /^(\d+)\s+(\d+)\s([\S]+)\s+total=([\d\.]+)\sview=([\d\.]+)\sdb=([\d\.]+)\sip=([\d\.]+)$/
 
       PXX_RANGES = {
-        200 => 5,
-        300 => 10,
+        100 => 2,
+        200 => 10,
         400 => 20,
         1000 => 50
       }

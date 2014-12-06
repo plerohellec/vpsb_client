@@ -10,9 +10,9 @@ module VpsbClient
       set_regex /^\S+;\S+;(?<ts>\d+);\S+;(?<user>[\d\.]+);(?<nice>[\d\.]+);(?<system>[\d\.]+);(?<iowait>[\d\.]+);(?<steal>[\d\.]+);(?<idle>[\d\.]+)$/
 
       PXX_RANGES = {
+        1  => 0.02,
         10 => 0.1,
-        20 => 0.2,
-        40 => 0.5,
+        20 => 0.5,
         100 => 1
       }
 
