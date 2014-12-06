@@ -13,9 +13,9 @@ module VpsbClient
 
       it 'upload metrics for all lengths' do
         trial = double('trial')
-        expect(@manager).to receive(:upload_for_interval_Length).with(trial, 600)
-        expect(@manager).to receive(:upload_for_interval_Length).with(trial, 3600)
-        expect(@manager).to receive(:upload_for_interval_Length).with(trial, 86400)
+        expect(@manager).to receive(:upload_for_interval_length).with(trial, 600).and_return([])
+        expect(@manager).to receive(:upload_for_interval_length).with(trial, 3600).and_return([])
+        expect(@manager).to receive(:upload_for_interval_length).with(trial, 86400).and_return([])
         @manager.upload_metrics(trial)
       end
     end

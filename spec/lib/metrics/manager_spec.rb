@@ -31,7 +31,7 @@ module VpsbClient
           allow(metric1).to receive(:[]).with(:started_at).and_return(@min_start_time)
 
           metric2 = double('metric2')
-          allow(metric2).to receive(:[]).with(:started_at).and_return(@min_start_time - 1)
+          allow(metric2).to receive(:[]).with(:started_at).and_return(@min_start_time - 2)
           expect(@builder).to receive(:each).and_yield(metric1).and_yield(metric2)
           expect(@uploader).to receive(:upload).with(metric1).once
           expect(@uploader).to receive(:upload).with(metric2).never
