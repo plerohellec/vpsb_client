@@ -5,11 +5,21 @@ module VpsbClient
   module Datafiles
     data_dir = File.join(File.dirname(__FILE__), '..', 'support/sarfiles')
 
+     class TestSadf
+      SADF = '/usr/bin/sadf'
+
+      def self.run(src, dest)
+        cmd = "touch #{dest}"
+        ret = system cmd
+        raise VpsbClient::Datafiles::SarManager::SadfError, "\"#{cmd}\" failed" unless ret
+      end
+    end
+
     describe SarManager do
       before :each do
         @orig_dir = "#{data_dir}/orig"
         @target_dir = "#{data_dir}/dest"
-        @manager = SarManager.new(@orig_dir, @target_dir)
+        @manager = SarManager.new(@orig_dir, @target_dir, TestSadf)
         allow(Time).to receive(:now).and_return(Time.new(2014,9,21,16,0,1,'-08:00'))
       end
 
@@ -42,7 +52,6 @@ module VpsbClient
         lines = File.readlines("#{@target_dir}/formatted_sa21")
         expect(lines.first).not_to match(/hello/)
       end
-
     end
   end
 end

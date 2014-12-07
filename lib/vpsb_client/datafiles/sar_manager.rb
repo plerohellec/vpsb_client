@@ -5,13 +5,13 @@ module VpsbClient
       class PermissionDeniedError < StandardError; end
       class SadfError < StandardError; end
 
-      SADF = '/usr/bin/sadf'
+      attr_reader :sadf_runner
 
-      def initialize(orig_path, target_path)
+      def initialize(orig_path, target_path, sadf = Sadf)
         raise NotFoundError, "#{orig_path} is not a directory" unless File.directory?(orig_path)
-        raise NotFoundError unless File.executable?(SADF)
         @orig_path = orig_path
         @target_path = target_path
+        @sadf_runner = sadf
       end
 
       def run
@@ -53,9 +53,18 @@ module VpsbClient
       end
 
       def sadf(src, dest)
+        sadf_runner.run(src, dest)
+      end
+    end
+
+    class Sadf
+      SADF = '/usr/bin/sadf'
+
+      def self.run(src, dest)
+        raise NotFoundError unless File.executable?(SADF)
         cmd = "#{SADF} -d #{src} -U > #{dest}"
         ret = system cmd
-        raise SadfError, "\"#{cmd}\" failed" unless ret
+        raise VpsbClient::Datafiles::SarManager::SadfError, "\"#{cmd}\" failed" unless ret
       end
     end
   end
