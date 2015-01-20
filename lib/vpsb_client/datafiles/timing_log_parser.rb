@@ -11,8 +11,9 @@ module VpsbClient
       PXX_RANGES = {
         100 => 2,
         200 => 10,
-        400 => 20,
-        1000 => 50
+        500 => 20,
+        1000 => 50,
+        3000 => 100
       }
 
       add_column :name => :timestamp,           :pos => 1, :aggregator => :timestamp
