@@ -15,7 +15,7 @@ module VpsbClient
       end
 
       def self.csrf_token(http_response)
-        regex = /<meta content=\"(?<token>[^\"]+)" name="csrf-token" \/>/
+        regex = /<meta name="csrf-token" content=\"(?<token>[^\"]+)" \/>/
         if match_data = http_response.body_str.match(regex)
           match_data[:token]
         else
