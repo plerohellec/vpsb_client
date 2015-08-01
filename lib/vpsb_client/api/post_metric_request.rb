@@ -2,7 +2,7 @@ module VpsbClient
   module Api
     class PostMetricRequest < PostRequest
 
-      def initialize(http_client, trial_id)
+      def initialize(http_client, trial_id, metric)
         super(http_client)
         @trial_id = trial_id
         @metric = metric
