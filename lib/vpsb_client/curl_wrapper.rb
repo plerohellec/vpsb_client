@@ -2,17 +2,15 @@ require 'curb'
 
 module VpsbClient
   class CurlWrapper
-    def initialize(cookie_jar_path)
-      @cookie_jar_path = cookie_jar_path
+    def initialize(auth_token)
+      @auth_token = auth_token
     end
 
     def get(url, &block)
       Curl.get(url) do |curl|
         curl.ssl_verify_host = false
         curl.ssl_verify_peer = false
-        curl.enable_cookies = true
-        curl.cookiejar = @cookie_jar_path
-        curl.cookiefile = @cookie_jar_path
+        curl.headers['Authorization'] = "Token #{@auth_token}"
 
         yield curl if block_given?
       end
@@ -22,10 +20,8 @@ module VpsbClient
       Curl.post(url, post_params) do |curl|
         curl.ssl_verify_host = false
         curl.ssl_verify_peer = false
-        curl.enable_cookies = true
-        curl.cookiejar = @cookie_jar_path
-        curl.cookiefile = @cookie_jar_path
         curl.headers['content-type'] = content_type
+        curl.headers['Authorization'] = "Token #{@auth_token}"
 
         yield curl if block_given?
       end
@@ -35,10 +31,8 @@ module VpsbClient
       Curl.put(url, put_params) do |curl|
         curl.ssl_verify_host = false
         curl.ssl_verify_peer = false
-        curl.enable_cookies = true
-        curl.cookiejar = @cookie_jar_path
-        curl.cookiefile = @cookie_jar_path
         curl.headers['content-type'] = content_type
+        curl.headers['Authorization'] = "Token #{@auth_token}"
 
         yield curl if block_given?
       end

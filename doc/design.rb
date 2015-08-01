@@ -83,7 +83,7 @@ module Request
     end
 
     def url
-      "https://#{@host}/admin/trials/current"
+      "https://#{@host}/api/trials/current"
     end
 
     def query_params

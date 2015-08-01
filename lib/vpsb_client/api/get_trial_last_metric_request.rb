@@ -8,7 +8,7 @@ module VpsbClient
       end
 
       def url_path
-        "/admin/trials/#{@trial_id}/last_metric"
+        "/api/trials/#{@trial_id}/last_metric"
       end
 
       def query_params

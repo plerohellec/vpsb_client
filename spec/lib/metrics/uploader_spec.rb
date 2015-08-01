@@ -7,7 +7,6 @@ module VpsbClient
         VpsbClient.logger = Logger.new('/dev/null')
         @curl = double('curl')
         @client = HttpClient.new(@curl, 'http', 'localhost')
-        @csrf_token = Proc.new { 'abc' }
         @trial_id = 1
         @start = Time.new(2014, 10, 15, 20, 0, 0)
         @len = 3600
@@ -16,8 +15,7 @@ module VpsbClient
       describe 'upload' do
         before :each do
           @metric = {started_at: @start + @len, duration_seconds: @len, trial_id: @trial_id}
-          @metric_params = { metric: @metric,
-                            authenticity_token: @csrf_token.call }
+          @metric_params = { metric: @metric }
 
           @curl_response = double('response')
           allow(@curl_response).to receive(:response_code).and_return(200)
@@ -26,19 +24,19 @@ module VpsbClient
         end
 
         it 'posts once for each interval' do
-          expect(@curl).to receive(:post).with('http://localhost/admin/metrics.json',
+          expect(@curl).to receive(:post).with('http://localhost/api/metrics.json',
                                               @metric_params.to_json,
                                               "application/json").once.and_return(@curl_response)
 
-          uploader = Uploader.new(@client, @csrf_token, @trial_id)
+          uploader = Uploader.new(@client, @trial_id)
           uploader.upload(@metric)
         end
 
         it 'returns the new metric id' do
-          allow(@curl).to receive(:post).with('http://localhost/admin/metrics.json',
+          allow(@curl).to receive(:post).with('http://localhost/api/metrics.json',
                                               @metric_params.to_json,
                                               "application/json").once.and_return(@curl_response)
-          uploader = Uploader.new(@client, @csrf_token, @trial_id)
+          uploader = Uploader.new(@client, @trial_id)
           expect(uploader.upload(@metric)).to eq(8)
         end
       end

@@ -30,13 +30,12 @@ module VpsbClient
     end
 
     class PostRequest < Request
-      def initialize(http_client, csrf_token)
+      def initialize(http_client)
         super(http_client)
-        @csrf_token = csrf_token
       end
 
       def run
-        @http_client.post(self, @csrf_token)
+        @http_client.post(self)
       end
 
       def content_type
@@ -46,13 +45,12 @@ module VpsbClient
 
 
     class PutRequest < Request
-      def initialize(http_client, csrf_token)
+      def initialize(http_client)
         super(http_client)
-        @csrf_token = csrf_token
       end
 
       def run
-        @http_client.put(self, @csrf_token)
+        @http_client.put(self)
       end
     end
   end

@@ -10,7 +10,7 @@ module VpsbClient
       end
 
       def url_path
-        "/admin/#{@item_type}/by_name/#{ERB::Util.url_encode(@name)}"
+        "/api/#{@item_type}/by_name/#{ERB::Util.url_encode(@name)}"
       end
 
       def self.item_id(http_response)

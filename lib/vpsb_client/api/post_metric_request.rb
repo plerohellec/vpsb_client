@@ -2,14 +2,14 @@ module VpsbClient
   module Api
     class PostMetricRequest < PostRequest
 
-      def initialize(http_client, trial_id, metric, csrf_token)
-        super(http_client, csrf_token)
+      def initialize(http_client, trial_id)
+        super(http_client)
         @trial_id = trial_id
         @metric = metric
       end
 
       def url_path
-        "/admin/metrics"
+        "/api/metrics"
       end
 
       def post_params

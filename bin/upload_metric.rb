@@ -5,8 +5,6 @@ require File.expand_path('../../lib/vpsb_client',  __FILE__)
 manager = VpsbClient::Manager.new(File.expand_path('../../config/vpsb.yml',  __FILE__))
 manager.setup
 
-puts "csrf token=#{manager.csrf_token}"
-
 trial_id = manager.current_trial['id']
 unless trial_id
   puts "Cannot find current trial"
@@ -33,7 +31,7 @@ interval[:p75_cpuidle_pct] = 1
 interval[:p95_cpuidle_pct] = 1
 interval[:p99_cpuidle_pct] = 1
 
-upload_request = VpsbClient::Api::PostMetricRequest.new(manager.http_client, trial_id, interval, manager.csrf_token)
+upload_request = VpsbClient::Api::PostMetricRequest.new(manager.http_client, trial_id, interval)
 http_response = VpsbClient::Api::Response.new(upload_request.run)
 metric_id = VpsbClient::Api::PostMetricRequest.metric_id(http_response)
 puts metric_id

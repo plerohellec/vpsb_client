@@ -3,8 +3,6 @@ plan_name: 2GB $20
 hoster_name: linode
 vpsb_protocol: http
 vpsb_hostname: localhost:3000
-cookie_jar_path: /tmp/curl_cookie_jar
-email: test@example.com
 comment: just a test
 sar_path: /var/log/sysstat
 formatted_sar_path: /tmp

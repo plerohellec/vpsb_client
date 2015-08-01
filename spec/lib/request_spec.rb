@@ -12,7 +12,7 @@ module VpsbClient
 
       describe GetItemIdRequest do
         it 'url includes item type and name' do
-          expect(@curl).to receive(:get).with('http://localhost/admin/hosters/by_name/linode.json').once
+          expect(@curl).to receive(:get).with('http://localhost/api/hosters/by_name/linode.json').once
 
           req = GetItemIdRequest.new(@client, 'hosters', 'linode')
           req.run
@@ -45,16 +45,15 @@ module VpsbClient
         before :each do
           @config = { 'client_host' => 'test-001' , 'comment' => 'rien a dire' }
           @params = Builders::Trial.new(@config, 1, 1, 1).create_params
-          @csrf_token = 'abc'
-          @trial_params = { 'trial' => @params, 'authenticity_token' => @csrf_token }
+          @trial_params = { 'trial' => @params }
         end
 
-        it 'url id /admin/trials' do
-          expect(@curl).to receive(:post).with('http://localhost/admin/trials.json',
+        it 'url id /api/trials' do
+          expect(@curl).to receive(:post).with('http://localhost/api/trials.json',
                                               @trial_params.to_json,
                                               "application/json").once
 
-          req = CreateTrialRequest.new(@client, @params, @csrf_token)
+          req = CreateTrialRequest.new(@client, @params)
           req.run
         end
 
@@ -64,7 +63,7 @@ module VpsbClient
           allow(curl_response).to receive(:body_str).and_return('{"id": 8, "application_id": 1}')
           allow(curl_response).to receive(:content_type).and_return("application/json")
           allow(@curl).to receive(:post).and_return(curl_response)
-          req = CreateTrialRequest.new(@client, @params, @csrf_token)
+          req = CreateTrialRequest.new(@client, @params)
           resp = Response.new(req.run)
           expect(CreateTrialRequest.trial_id(resp)).to eq(8)
         end
@@ -75,8 +74,8 @@ module VpsbClient
           @params = { client_hostname: 'test-001' }
         end
 
-        it 'gets /admin/trials/current with ids' do
-          expect(@curl).to receive(:get).with('http://localhost/admin/trials/current.json?client_hostname=test-001').once
+        it 'gets /api/trials/current with ids' do
+          expect(@curl).to receive(:get).with('http://localhost/api/trials/current.json?client_hostname=test-001').once
 
           req = GetCurrentTrialRequest.new(@client, @params)
           req.run
@@ -110,8 +109,8 @@ module VpsbClient
           @params = { trial_id: 1, length: 3600 }
         end
 
-        it 'gets /admin/trials/:id/last_metric with length' do
-          expect(@curl).to receive(:get).with('http://localhost/admin/trials/1/last_metric.json?length=3600').once
+        it 'gets /api/trials/:id/last_metric with length' do
+          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/last_metric.json?length=3600').once
 
           req = GetTrialLastMetricRequest.new(@client, @params)
           req.run
@@ -142,18 +141,17 @@ module VpsbClient
 
       describe PostMetricRequest do
         before :each do
-          @csrf_token = 'abc'
           @trial_id = 1
           @metric = { duration_seconds: 3600 }
-          @metric_params = { metric: @metric.merge({ 'trial_id' => @trial_id}), 'authenticity_token' => @csrf_token }
+          @metric_params = { metric: @metric.merge({ 'trial_id' => @trial_id}) }
         end
 
-        it 'posts /admin/metrics with length' do
-          expect(@curl).to receive(:post).with('http://localhost/admin/metrics.json',
+        it 'posts /api/metrics with length' do
+          expect(@curl).to receive(:post).with('http://localhost/api/metrics.json',
                                               @metric_params.to_json,
                                               "application/json").once
 
-          req = PostMetricRequest.new(@client, @trial_id, @metric, @csrf_token)
+          req = PostMetricRequest.new(@client, @trial_id, @metric)
           req.run
         end
 
@@ -163,7 +161,7 @@ module VpsbClient
           allow(curl_response).to receive(:body_str).and_return('{"id": 8}')
           allow(curl_response).to receive(:content_type).and_return("application/json")
           allow(@curl).to receive(:post).and_return(curl_response)
-          req = PostMetricRequest.new(@client, @trial_id, @metric, @csrf_token)
+          req = PostMetricRequest.new(@client, @trial_id, @metric)
           resp = Response.new(req.run)
           expect(PostMetricRequest.metric_id(resp)).to eq(8)
         end
@@ -171,17 +169,16 @@ module VpsbClient
 
       describe CloseTrialRequest do
         before :each do
-          @csrf_token = 'abc'
           @trial_id = 1
-          @params = { 'authenticity_token' => @csrf_token }
+          @params = { }
         end
 
-        it 'posts /admin/metrics with length' do
-          expect(@curl).to receive(:put).with('http://localhost/admin/trials/1/close.json',
+        it 'posts /api/metrics with length' do
+          expect(@curl).to receive(:put).with('http://localhost/api/trials/1/close.json',
                                               @params.to_json,
                                               "application/json").once
 
-          req = CloseTrialRequest.new(@client, @trial_id, @csrf_token)
+          req = CloseTrialRequest.new(@client, @trial_id)
           req.run
         end
 
@@ -191,7 +188,7 @@ module VpsbClient
           allow(curl_response).to receive(:body_str).and_return('')
           allow(curl_response).to receive(:content_type).and_return("application/json")
           expect(@curl).to receive(:put).and_return(curl_response)
-          req = CloseTrialRequest.new(@client, @trial_id, @csrf_token)
+          req = CloseTrialRequest.new(@client, @trial_id)
           resp = Response.new(req.run)
         end
       end

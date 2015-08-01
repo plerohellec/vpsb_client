@@ -10,13 +10,13 @@ module VpsbClient
       @curl_wrapper.get(url(request))
     end
 
-    def post(request, csrf_token = nil)
-      post_params = post_params(request, csrf_token, request.content_type)
+    def post(request)
+      post_params = post_params(request, request.content_type)
       @curl_wrapper.post(url(request), post_params, request.content_type)
     end
 
-    def put(request, csrf_token = nil)
-      put_params = put_params(request, csrf_token, request.content_type)
+    def put(request)
+      put_params = put_params(request, request.content_type)
       @curl_wrapper.put(url(request), put_params, request.content_type)
     end
 
@@ -35,9 +35,8 @@ module VpsbClient
       '.json' if request.accept == 'application/json'
     end
 
-    def post_params(request, csrf_token, content_type)
+    def post_params(request, content_type)
       post_params = request.post_params
-      post_params[:authenticity_token] = csrf_token if csrf_token
       if request.content_type == 'application/json'
         JSON.generate(post_params) # curl doesn't do the json encoding by itself
       else

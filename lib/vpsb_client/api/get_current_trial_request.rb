@@ -7,7 +7,7 @@ module VpsbClient
       end
 
       def url_path
-        "/admin/trials/current"
+        "/api/trials/current"
       end
 
       def query_params

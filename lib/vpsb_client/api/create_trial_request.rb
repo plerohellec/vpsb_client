@@ -3,8 +3,8 @@ module VpsbClient
     class CreateTrialRequest < PostRequest
       MANDATORY_PARAM_NAMES = [ :started_at, :hoster_id, :application_id, :plan_id, :comment, :os, :free_memory_mb, :cpu_type, :num_cores, :kernel, :client_hostname, :ruby_version, :rails_version, :datacenter, :cpu_mhz]
 
-      def initialize(http_client, trial, csrf_token)
-        super(http_client, csrf_token)
+      def initialize(http_client, trial)
+        super(http_client)
         @trial = trial
         MANDATORY_PARAM_NAMES.each do |name|
           raise ArgumentError, "param #{name} is mandatory" unless @trial.keys.include?(name)
@@ -15,7 +15,7 @@ module VpsbClient
       end
 
       def url_path
-        "/admin/trials"
+        "/api/trials"
       end
 
       def post_params
