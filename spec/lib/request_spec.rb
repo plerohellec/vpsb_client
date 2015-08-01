@@ -30,17 +30,6 @@ module VpsbClient
         end
       end
 
-      describe SigninRequest do
-        it 'url is /users/signin' do
-          expect(@curl).to receive(:post).with('http://localhost/users/sign_in',
-                                            {"user[email]"=>"foo@bar.com", "user[password]"=>"foobar", :authenticity_token=>"xyz"},
-                                            "application/x-www-form-urlencoded").once
-
-          req = SigninRequest.new(@client, 'foo@bar.com', 'foobar', 'xyz')
-          req.run
-        end
-      end
-
       describe CreateTrialRequest do
         before :each do
           @config = { 'client_host' => 'test-001' , 'comment' => 'rien a dire' }
