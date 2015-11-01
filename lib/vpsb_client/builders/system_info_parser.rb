@@ -18,7 +18,12 @@ module VpsbClient
           matches = regex.match(line)
           break if matches
         end
-        raise NoMatchError, "Cannot find /#{regex}/ in #{@filepath}" unless matches
+        matches
+      end
+
+      def find_matches!(regex)
+        matches = find_matches(regex)
+        raise NoMatchError, "Cannot find /#{regex}/" unless matches
         matches
       end
     end
@@ -34,10 +39,10 @@ module VpsbClient
       end
 
       def parse
-        matches = find_matches(REGEX_CACHE)
+        matches = find_matches!(REGEX_CACHE)
         @used = matches[:used].to_i
         @free = matches[:free].to_i
-        matches = find_matches(REGEX_TOTAL)
+        matches = find_matches!(REGEX_TOTAL)
         @total = matches[:total].to_i
       end
     end
@@ -52,7 +57,7 @@ module VpsbClient
       end
 
       def parse
-        matches = find_matches(REGEX)
+        matches = find_matches!(REGEX)
         @kernel  = matches[:kernel]
         @os_type = matches[:type]
       end
@@ -62,6 +67,7 @@ module VpsbClient
       attr_reader :model, :num, :mhz
       # model name  : Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz
       REGEX = Regexp.new('^model name\s*:\s*(?<model>.*$)')
+      REGEX_PROCESSOR = Regexp.new('^Processor\s*:\s*(?<model>.*$)')
 
       def initialize
         super('cat /proc/cpuinfo')
@@ -69,6 +75,7 @@ module VpsbClient
 
       def parse
         matches = find_matches(REGEX)
+        matches = find_matches!(REGEX_PROCESSOR) unless matches
         @model = matches[:model]
         parse_num_processors
         parse_cpu_speed
@@ -86,7 +93,11 @@ module VpsbClient
 
       def parse_cpu_speed
         matches = find_matches(/^cpu MHz\s*:\s*(?<mhz>\d+)/)
-        @mhz = matches[:mhz].to_i
+        if matches
+          @mhz = matches[:mhz].to_i
+        else
+          @mhz = nil
+        end
       end
     end
 
@@ -100,7 +111,7 @@ module VpsbClient
       end
 
       def parse
-        matches = find_matches(REGEX)
+        matches = find_matches!(REGEX)
         @os = matches[:os]
       end
     end
