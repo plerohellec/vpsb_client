@@ -47,9 +47,9 @@ module VpsbClient
 
       it 'replaces current day formatted file if it exists' do
         system "mkdir #{@target_dir}"
-        system "echo \"hello\" > #{@target_dir}/formatted_sa21"
+        system "echo \"hello\" > #{@target_dir}/formatted_sa20140921"
         @manager.run
-        lines = File.readlines("#{@target_dir}/formatted_sa21")
+        lines = File.readlines("#{@target_dir}/formatted_sa20140921")
         expect(lines.first).not_to match(/hello/)
       end
     end

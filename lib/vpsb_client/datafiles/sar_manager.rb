@@ -36,7 +36,7 @@ module VpsbClient
         raw_sar_filenames.each do |filename|
           filename.match /sa(?<num>\d+)$/ do |matchdata|
             fileday = matchdata[:num]
-            next if fileday.to_i == Time.now.day
+            next if fileday == Time.now.strftime('%Y%m%d')
 
             formatted_filename = "#{@target_path}/formatted_sa#{fileday}"
             next if File.exist?(formatted_filename)
@@ -47,7 +47,7 @@ module VpsbClient
 
       def create_current_day_temp_formatted
         sa_filename = "#{@orig_path}/sa#{Time.now.strftime('%Y%m%d')}"
-        formatted_filename = "#{@target_path}/formatted_sa#{'%02d' % Time.now.day}"
+        formatted_filename = "#{@target_path}/formatted_sa#{Time.now.strftime('%Y%m%d')}"
         File.delete(formatted_filename) if File.exist?(formatted_filename)
         sadf(sa_filename, formatted_filename)
       end
