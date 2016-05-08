@@ -32,6 +32,7 @@ module VpsbClient
       attr_reader :used, :free, :total
 
       REGEX_CACHE = 'cache:\s+(?<used>\d+)\s+(?<free>\d+)$'
+      REGEX_AVAIL = '^Mem:\s+\d+\s+(?<used>\d+)\s+\d+\s+\d+\s+\d+\s+(?<avail>\d+)'
       REGEX_TOTAL = '^Mem:\s+(?<total>\d+)'
 
       def initialize
@@ -39,9 +40,16 @@ module VpsbClient
       end
 
       def parse
-        matches = find_matches!(REGEX_CACHE)
-        @used = matches[:used].to_i
-        @free = matches[:free].to_i
+        matches = find_matches(REGEX_CACHE)
+        if matches
+          @used = matches[:used].to_i
+          @free = matches[:free].to_i
+        elsif matches = find_matches(REGEX_AVAIL)
+          @used = matches[:used].to_i
+          @free = matches[:avail].to_i
+        else
+          raise NoMatchError, "No regex matches 'free' output"     
+        end
         matches = find_matches!(REGEX_TOTAL)
         @total = matches[:total].to_i
       end
