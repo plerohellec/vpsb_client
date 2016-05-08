@@ -46,7 +46,7 @@ module VpsbClient
       end
 
       def create_current_day_temp_formatted
-        sa_filename = "#{@orig_path}/sa#{'%02d' % Time.now.day}"
+        sa_filename = "#{@orig_path}/sa#{Time.now.strftime('%Y%m%d')}"
         formatted_filename = "#{@target_path}/formatted_sa#{'%02d' % Time.now.day}"
         File.delete(formatted_filename) if File.exist?(formatted_filename)
         sadf(sa_filename, formatted_filename)
