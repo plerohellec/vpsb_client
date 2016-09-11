@@ -138,6 +138,24 @@ module VpsbClient
         end
       end
 
+      describe PostSysbenchRun do
+        it 'posts to /api/trials/:id/sysbench_runs' do
+          run_params = {
+            sysbench_run: {
+              test_id: 2,
+              command: 'do it',
+              data: 'all done'
+            }
+          }
+          expect(@curl).to receive(:post).with('http://localhost/api/trials/1/sysbench_runs.json',
+                  run_params.to_json,
+                  "application/json").once
+
+          req = PostSysbenchRun.new(@client, 1, 2, 'do it', 'all done')
+          req.run
+        end
+      end
+
       describe PostMetricRequest do
         before :each do
           @trial_id = 1

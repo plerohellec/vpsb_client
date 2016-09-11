@@ -52,6 +52,12 @@ module VpsbClient
       Api::CreateTrialRequest.trial(http_response)
     end
 
+    def create_sysbench_run(trial_id, test_id, command, data)
+      create_sysbench_run_request = Api::PostSysbenchRun.new(@http_client, trial_id, test_id, command, data)
+      curl_response = create_sysbench_run_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
     def current_trial
       builder = Builders::Trial.new(@config)
       current_trial_request = Api::GetCurrentTrialRequest.new(@http_client, builder.lookup_params)
