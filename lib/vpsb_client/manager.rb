@@ -67,6 +67,13 @@ module VpsbClient
       Api::GetTrialLastMetricRequest.started_at(http_response)
     end
 
+    def trial_sysbench_tests(trial_id)
+      trial_sysbench_tests_request = Api::GetTrialSysbenchTests.new(@http_client, trial_id: trial_id)
+      curl_response = trial_sysbench_tests_request.run
+      http_response = Api::Response.new(curl_response)
+      Api::GetTrialSysbenchTests.tests(http_response)
+    end
+
     def hoster_id
       return @hoster_id if @hoster_id
       id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', @config['hoster_name'])
@@ -103,7 +110,7 @@ module VpsbClient
       end
 
       prepare_logfiles
-      
+
       metric_ids = []
       interval_length = 604800
       last_started_at = trial_last_metric_started_at(trial['id'], interval_length)

@@ -128,6 +128,16 @@ module VpsbClient
         end
       end
 
+      describe GetTrialSysbenchTests do
+        it 'gets /api/trials/:id/sysbench_tests' do
+          @params = {trial_id: 1 }
+          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/sysbench_tests.json').once
+
+          req = GetTrialSysbenchTests.new(@client, @params)
+          req.run
+        end
+      end
+
       describe PostMetricRequest do
         before :each do
           @trial_id = 1
