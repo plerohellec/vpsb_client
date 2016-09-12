@@ -11,7 +11,7 @@ module VpsbClient
       end
 
       def self.tests(http_response)
-        return nil if http_response.parsed_response.empty?
+        return [] if http_response.parsed_response.empty?
         http_response.parsed_response
       end
     end
