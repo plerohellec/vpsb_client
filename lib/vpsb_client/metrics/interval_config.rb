@@ -28,7 +28,7 @@ module VpsbClient
       end
 
       def min_end_time
-        min_start_time + @interval_length
+        min_start_time + @interval_length - 5.seconds
       end
 
       def length
