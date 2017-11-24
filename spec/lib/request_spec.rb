@@ -209,6 +209,55 @@ module VpsbClient
           resp = Response.new(req.run)
         end
       end
+
+      describe CreateEnduranceRun do
+        it 'posts to /api/trials/:trial_id/endurance_runs' do
+          run_params = {
+            num_processors: 3
+          }
+          expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/endurance_runs.json",
+                  run_params.to_json,
+                  "application/json").once
+
+          req = CreateEnduranceRun.new(@client, @trial_id, 3)
+          req.run
+        end
+      end
+
+      describe CreateEnduranceMetric do
+        it 'posts to /api/trials/:trial_id/endurance_run/:run_id/metric' do
+          @endurance_run_id = 2
+
+          run_params = {
+            ended_at: Time.now,
+            num_iterations: 5,
+            duration_seconds: 60,
+            cpu_idle: 0.4,
+            cpu_system: 0.01,
+            cpu_steal: 0.1,
+            cpu_iowait: 0.05,
+          }
+
+          expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/endurance_run/#{@endurance_run_id}/metric.json",
+                  run_params.to_json,
+                  "application/json").once
+
+          req = CreateEnduranceMetric.new(@client, @trial_id, @endurance_run_id, run_params)
+          req.run
+        end
+      end
+
+      describe CloseEnduranceRun do
+        it 'puts to /api/trials/:id/endurance_run/:run_id/close' do
+          @endurance_run_id = 2
+
+          expect(@curl).to receive(:put).with("http://localhost/api/trials/#{@trial_id}/endurance_run/#{@endurance_run_id}/close.json", {}.to_json, "application/json").once
+
+          req = CloseEnduranceRun.new(@client, @trial_id, @endurance_run_id)
+          req.run
+        end
+      end
+
     end
   end
 end

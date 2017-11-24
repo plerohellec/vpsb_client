@@ -58,6 +58,24 @@ module VpsbClient
       http_response = Api::Response.new(curl_response)
     end
 
+    def create_endurance_run(trial_id, num_processors)
+      create_endurance_run_request = Api::CreateEnduranceRun.new(@http_client, trial_id, num_processors)
+      curl_response = create_endurance_run_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
+    def close_endurance_run(trial_id, endurance_run_id)
+      close_endurance_run_request = Api::CloseEnduranceRun.new(@http_client, trial_id, endurance_run_id)
+      curl_response = close_endurance_run_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
+    def create_endurance_metric(trial_id, endurance_run_id, metric_params)
+      create_endurance_metric_request = Api::CreateEnduranceMetric.new(@http_client, trial_id, endurance_run_id, metric_params)
+      curl_response = create_endurance_metric_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
     def current_trial
       builder = Builders::Trial.new(@config)
       current_trial_request = Api::GetCurrentTrialRequest.new(@http_client, builder.lookup_params)
