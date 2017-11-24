@@ -10,7 +10,7 @@ module VpsbClient
       end
 
       def url_path
-        "/api/trials/#{@trial_id}/endurance_run/#{@run_id}/metric"
+        "/api/trials/#{@trial_id}/endurance_runs/#{@run_id}/metric"
       end
 
       def post_params
