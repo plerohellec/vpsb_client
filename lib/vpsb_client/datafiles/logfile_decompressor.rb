@@ -1,3 +1,5 @@
+require 'zlib'
+
 module VpsbClient
   module Datafiles
     class LogfileDecompressor

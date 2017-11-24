@@ -8,9 +8,9 @@ module VpsbClient
       it 'finds the amount of memory available in the system' do
         mp = MemoryParser.new
         mp.parse
-        expect(mp.used).to be_an_instance_of(Fixnum)
-        expect(mp.free).to be_an_instance_of(Fixnum)
-        expect(mp.total).to be_an_instance_of(Fixnum)
+        expect(mp.used).to be_an_instance_of(Integer)
+        expect(mp.free).to be_an_instance_of(Integer)
+        expect(mp.total).to be_an_instance_of(Integer)
       end
     end
 
@@ -30,11 +30,11 @@ module VpsbClient
 
       it 'finds the model and number of processors' do
         expect(@mp.model).to match(/^.*CPU.*GHz$/)
-        expect(@mp.num).to be_an_instance_of(Fixnum)
+        expect(@mp.num).to be_an_instance_of(Integer)
       end
 
       it 'finds the cpu speed' do
-        expect(@mp.mhz).to be_an_instance_of(Fixnum)
+        expect(@mp.mhz).to be_an_instance_of(Integer)
       end
     end
 
@@ -48,4 +48,3 @@ module VpsbClient
     end
   end
 end
-
