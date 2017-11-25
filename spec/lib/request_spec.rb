@@ -12,7 +12,7 @@ module VpsbClient
 
       describe GetItemIdRequest do
         it 'url includes item type and name' do
-          expect(@curl).to receive(:get).with('http://localhost/api/hosters/by_name/linode.json').once
+          expect(@curl).to receive(:get).with('http://localhost/api/hosters/by_name/linode.json', {}).once
 
           req = GetItemIdRequest.new(@client, 'hosters', 'linode')
           req.run
@@ -64,7 +64,7 @@ module VpsbClient
         end
 
         it 'gets /api/trials/current with ids' do
-          expect(@curl).to receive(:get).with('http://localhost/api/trials/current.json?client_hostname=test-001').once
+          expect(@curl).to receive(:get).with('http://localhost/api/trials/current.json', { client_hostname: 'test-001'}).once
 
           req = GetCurrentTrialRequest.new(@client, @params)
           req.run
@@ -99,7 +99,7 @@ module VpsbClient
         end
 
         it 'gets /api/trials/:id/last_metric with length' do
-          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/last_metric.json?length=3600').once
+          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/last_metric.json', length: 3600).once
 
           req = GetTrialLastMetricRequest.new(@client, @params)
           req.run
@@ -131,7 +131,7 @@ module VpsbClient
       describe GetTrialSysbenchTests do
         it 'gets /api/trials/:id/sysbench_tests' do
           @params = {trial_id: 1 }
-          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/sysbench_tests.json').once
+          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/sysbench_tests.json', {}).once
 
           req = GetTrialSysbenchTests.new(@client, @params)
           req.run
@@ -225,7 +225,7 @@ module VpsbClient
       end
 
       describe CreateEnduranceMetric do
-        it 'posts to /api/trials/:trial_id/endurance_run/:run_id/metric' do
+        it 'posts to /api/trials/:trial_id/endurance_runs/:run_id/metric' do
           @endurance_run_id = 2
 
           run_params = {
@@ -238,7 +238,7 @@ module VpsbClient
             cpu_iowait: 0.05,
           }
 
-          expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/endurance_run/#{@endurance_run_id}/metric.json",
+          expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/endurance_runs/#{@endurance_run_id}/metric.json",
                   run_params.to_json,
                   "application/json").once
 
@@ -248,10 +248,10 @@ module VpsbClient
       end
 
       describe CloseEnduranceRun do
-        it 'puts to /api/trials/:id/endurance_run/:run_id/close' do
+        it 'puts to /api/trials/:id/endurance_runs/:run_id/close' do
           @endurance_run_id = 2
 
-          expect(@curl).to receive(:put).with("http://localhost/api/trials/#{@trial_id}/endurance_run/#{@endurance_run_id}/close.json", {}.to_json, "application/json").once
+          expect(@curl).to receive(:put).with("http://localhost/api/trials/#{@trial_id}/endurance_runs/#{@endurance_run_id}/close.json", {}.to_json, "application/json").once
 
           req = CloseEnduranceRun.new(@client, @trial_id, @endurance_run_id)
           req.run

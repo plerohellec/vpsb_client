@@ -23,7 +23,7 @@ module VpsbClient
     private
 
     def url(request)
-      "#{@protocol}://#{@hostname}#{request.url_path}"
+      "#{@protocol}://#{@hostname}#{request.url_path}#{suffix(request)}"
     end
 
     def query_sep(query_string)
