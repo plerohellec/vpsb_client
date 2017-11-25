@@ -7,7 +7,7 @@ module VpsbClient
     end
 
     def get(request)
-      @curl_wrapper.get(url(request))
+      @curl_wrapper.get(url(request), request.query_params)
     end
 
     def post(request)
@@ -23,8 +23,7 @@ module VpsbClient
     private
 
     def url(request)
-      query_string = url_encode(request.query_params)
-      "#{@protocol}://#{@hostname}#{request.url_path}#{suffix(request)}#{query_sep(query_string)}#{query_string}"
+      "#{@protocol}://#{@hostname}#{request.url_path}"
     end
 
     def query_sep(query_string)

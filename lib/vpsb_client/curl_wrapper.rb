@@ -6,8 +6,8 @@ module VpsbClient
       @auth_token = auth_token
     end
 
-    def get(url, &block)
-      Curl.get(url) do |curl|
+    def get(url, query_params, &block)
+      Curl.get(url, query_params) do |curl|
         curl.ssl_verify_host = false
         curl.ssl_verify_peer = false
         curl.headers['Authorization'] = "Token #{@auth_token}"
