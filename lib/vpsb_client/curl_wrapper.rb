@@ -2,6 +2,9 @@ require 'curb'
 
 module VpsbClient
   class CurlWrapper
+    CONNECT_TIMEOUT = 5
+    TIMEOUT = 5
+
     def initialize(auth_token)
       @auth_token = auth_token
     end
@@ -10,6 +13,8 @@ module VpsbClient
       Curl.get(url, query_params) do |curl|
         curl.ssl_verify_host = false
         curl.ssl_verify_peer = false
+        curl.timeout = TIMEOUT
+        curl.connect_timeout = CONNECT_TIMEOUT
         curl.headers['Authorization'] = "Token #{@auth_token}"
 
         yield curl if block_given?
@@ -20,6 +25,8 @@ module VpsbClient
       Curl.post(url, post_params) do |curl|
         curl.ssl_verify_host = false
         curl.ssl_verify_peer = false
+        curl.timeout = TIMEOUT
+        curl.connect_timeout = CONNECT_TIMEOUT
         curl.headers['content-type'] = content_type
         curl.headers['Authorization'] = "Token #{@auth_token}"
 
@@ -31,6 +38,8 @@ module VpsbClient
       Curl.put(url, put_params) do |curl|
         curl.ssl_verify_host = false
         curl.ssl_verify_peer = false
+        curl.timeout = TIMEOUT
+        curl.connect_timeout = CONNECT_TIMEOUT
         curl.headers['content-type'] = content_type
         curl.headers['Authorization'] = "Token #{@auth_token}"
 
