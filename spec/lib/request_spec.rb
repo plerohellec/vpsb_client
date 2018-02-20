@@ -258,6 +258,15 @@ module VpsbClient
         end
       end
 
+      describe UpdatePlanGrades do
+        it 'puts to /api/plans/update_plan_grades' do
+          expect(@curl).to receive(:put).with("http://localhost/api/plans/update_plan_grades", {}, "application/x-www-form-urlencoded").once
+
+          req = UpdatePlanGrades.new(@client)
+          req.run
+        end
+      end
+
     end
   end
 end

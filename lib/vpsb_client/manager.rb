@@ -157,6 +157,13 @@ module VpsbClient
       http_response
     end
 
+    def update_plan_grades
+      update_request = Api::UpdatePlanGrades.new(@http_client)
+      http_response = Api::Response.new(update_request.run)
+      logger.debug "[vpsb] update plan grades request response code = #{http_response.code}"
+      http_response
+    end
+
     private
 
     def prepare_logfiles
