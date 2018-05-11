@@ -258,6 +258,29 @@ module VpsbClient
         end
       end
 
+      describe CreateTransfer do
+        it 'posts to /api/trials/:trial_id/transfers' do
+          transfer_params = {
+            transfer: {
+              server: "bigs",
+              latency_ms: 14,
+              download_size_bytes: 10000,
+              download_duration_ms: 20000,
+              upload_size_bytes: 5000,
+              upload_duration_ms: 3000
+            }
+          }
+          expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/transfers.json",
+                  transfer_params.to_json,
+                  "application/json").once
+
+          vals = transfer_params[:transfer]
+          req = CreateTransfer.new(@client, @trial_id, vals[:server], vals[:latency_ms], vals[:download_size_bytes],
+                                  vals[:download_duration_ms], vals[:upload_size_bytes], vals[:upload_duration_ms])
+          req.run
+        end
+      end
+
       describe UpdatePlanGrades do
         it 'puts to /api/plans/update_plan_grades' do
           expect(@curl).to receive(:put).with("http://localhost/api/plans/update_plan_grades", {}, "application/x-www-form-urlencoded").once

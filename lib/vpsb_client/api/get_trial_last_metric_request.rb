@@ -1,3 +1,5 @@
+require 'date'
+
 module VpsbClient
   module Api
     class GetTrialLastMetricRequest < GetRequest

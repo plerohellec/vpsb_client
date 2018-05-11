@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Philippe Le Rohellec"]
   spec.email         = ["philippe@lerohellec.com"]
   spec.summary       = "Client gem for vpsbenchmarks.com"
-  spec.description   = "It allows creating and upddating trials."
+  spec.description   = "vpsb_client allows creating, updating trials and uploading test results."
   spec.homepage      = ""
   spec.license       = "MIT"
 

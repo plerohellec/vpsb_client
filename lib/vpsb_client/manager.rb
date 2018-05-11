@@ -76,6 +76,13 @@ module VpsbClient
       http_response = Api::Response.new(curl_response)
     end
 
+    def create_transfer(trial_id, server, latency_ms, download_size_bytes, download_duration_ms, upload_size_bytes, upload_duration_ms)
+      create_transfer_request = Api::CreateTransfer.new(@http_client, trial_id, server, latency_ms,
+                                                        download_size_bytes, download_duration_ms, upload_size_bytes, upload_duration_ms)
+      curl_response = create_transfer_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
     def current_trial
       builder = Builders::Trial.new(@config)
       current_trial_request = Api::GetCurrentTrialRequest.new(@http_client, builder.lookup_params)
