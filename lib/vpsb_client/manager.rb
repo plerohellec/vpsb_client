@@ -98,7 +98,7 @@ module VpsbClient
       Api::GetTrialLastMetricRequest.started_at(http_response)
     end
 
-    def trial_sysbench_tests(trial_id)
+    def trial_sysbench_tests(trial_id, sysbench_version)
       trial_sysbench_tests_request = Api::GetTrialSysbenchTests.new(@http_client, trial_id: trial_id)
       curl_response = trial_sysbench_tests_request.run
       http_response = Api::Response.new(curl_response)
