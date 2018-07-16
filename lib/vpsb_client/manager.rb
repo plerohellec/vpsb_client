@@ -99,7 +99,7 @@ module VpsbClient
     end
 
     def trial_sysbench_tests(trial_id, sysbench_version)
-      trial_sysbench_tests_request = Api::GetTrialSysbenchTests.new(@http_client, trial_id: trial_id)
+      trial_sysbench_tests_request = Api::GetTrialSysbenchTests.new(@http_client, { trial_id: trial_id, sysbench_version: sysbench_version } )
       curl_response = trial_sysbench_tests_request.run
       http_response = Api::Response.new(curl_response)
       Api::GetTrialSysbenchTests.tests(http_response)
