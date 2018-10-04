@@ -134,7 +134,7 @@ module VpsbClient
 
     include Client::UploadMetrics
 
-    def close_trial(trial)
+    def upload_weekly_metrics(trial)
       unless enabled?
         logger.debug "[vpsb] not running because vpsb_client is disabled"
         return
@@ -157,6 +157,13 @@ module VpsbClient
       metrics_manager.run
       metric_ids += metrics_manager.created_metric_ids
       logger.debug "[vpsb] Created metric ids: #{metric_ids.inspect}"
+    end
+
+    def close_trial(trial)
+      unless enabled?
+        logger.debug "[vpsb] not running because vpsb_client is disabled"
+        return
+      end
 
       close_request = Api::CloseTrialRequest.new(@http_client, trial['id'])
       http_response = Api::Response.new(close_request.run)
