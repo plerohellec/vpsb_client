@@ -24,7 +24,7 @@ module VpsbClient
         end
 
         it 'posts once for each interval' do
-          expect(@curl).to receive(:post).with('http://localhost/api/metrics.json',
+          expect(@curl).to receive(:post).with('http://localhost/api/metrics',
                                               @metric_params.to_json,
                                               "application/json").once.and_return(@curl_response)
 
@@ -33,7 +33,7 @@ module VpsbClient
         end
 
         it 'returns the new metric id' do
-          allow(@curl).to receive(:post).with('http://localhost/api/metrics.json',
+          allow(@curl).to receive(:post).with('http://localhost/api/metrics',
                                               @metric_params.to_json,
                                               "application/json").once.and_return(@curl_response)
           uploader = Uploader.new(@client, @trial_id)
