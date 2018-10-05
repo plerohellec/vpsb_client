@@ -129,7 +129,7 @@ module VpsbClient
       end
 
       describe GetTrialSysbenchTests do
-        it 'gets /api/trials/:id/sysbench_tests' do
+        it 'gets /api/trials/:id/sysbench_tests in prod' do
           @params = { trial_id: 1, sysbench_version: 'sysbench 1.0.11' }
           expect(@curl).to receive(:get)
                         .with('http://localhost/api/trials/1/sysbench_tests',
@@ -139,6 +139,18 @@ module VpsbClient
           req = GetTrialSysbenchTests.new(@client, @params)
           req.run
         end
+
+        it 'gets /api/trials/:id/sysbench_tests in dev' do
+          @params = { trial_id: 1, sysbench_version: 'sysbench 1.0.11', dev: true }
+          expect(@curl).to receive(:get)
+                        .with('http://localhost/api/trials/1/sysbench_tests',
+                              { sysbench_version: 'sysbench 1.0.11', dev: true})
+                        .once
+
+          req = GetTrialSysbenchTests.new(@client, @params)
+          req.run
+        end
+
       end
 
       describe PostSysbenchRun do

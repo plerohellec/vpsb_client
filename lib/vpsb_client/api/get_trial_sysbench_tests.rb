@@ -5,6 +5,7 @@ module VpsbClient
         super(http_client)
         @trial_id = params[:trial_id]
         @sysbench_version = params[:sysbench_version]
+        @dev = params[:dev]
       end
 
       def url_path
@@ -12,9 +13,11 @@ module VpsbClient
       end
 
       def query_params
-        {
+        h = {
           sysbench_version: @sysbench_version
         }
+        h[:dev] = @dev if @dev
+        h
       end
 
       def self.tests(http_response)
