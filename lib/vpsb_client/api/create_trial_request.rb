@@ -1,7 +1,8 @@
 module VpsbClient
   module Api
     class CreateTrialRequest < PostRequest
-      MANDATORY_PARAM_NAMES = [ :started_at, :hoster_id, :application_id, :plan_id, :comment, :os, :free_memory_mb, :cpu_type, :num_cores, :kernel, :client_hostname, :ruby_version, :rails_version, :datacenter, :cpu_mhz]
+      MANDATORY_PARAM_NAMES = [ :started_at, :hoster_id, :application_id, :plan_id, :os, :free_memory_mb, :cpu_type, :num_cores, :kernel, :client_hostname, :ruby_version, :rails_version, :datacenter, :cpu_mhz]
+      OPTIONAL_PARAM_NAMES = [ :comment, :provision_seconds, :postgresql_version ]
 
       def initialize(http_client, trial)
         super(http_client)
@@ -10,7 +11,9 @@ module VpsbClient
           raise ArgumentError, "param #{name} is mandatory" unless @trial.keys.include?(name)
         end
         @trial.keys.each do |name|
-          raise ArgumentError, "param #{name} is not allowed" unless MANDATORY_PARAM_NAMES.include?(name)
+          if !MANDATORY_PARAM_NAMES.include?(name) && !OPTIONAL_PARAM_NAMES.include?(name)
+            raise ArgumentError, "param #{name} is not allowed"
+          end
         end
       end
 

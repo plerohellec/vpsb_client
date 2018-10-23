@@ -32,7 +32,7 @@ module VpsbClient
 
       describe CreateTrialRequest do
         before :each do
-          @config = { 'client_host' => 'test-001' , 'comment' => 'rien a dire' }
+          @config = Config.new("#{support_dir}/vpsb.yml")
           @params = Builders::Trial.new(@config, 1, 1, 1).create_params
           @trial_params = { 'trial' => @params }
         end

@@ -2,8 +2,6 @@ require 'spec_helper'
 #require File.join(File.dirname(__FILE__), '..', 'support/lib/timing_log')
 
 module VpsbClient
-  data_dir = File.join(File.dirname(__FILE__), '..', 'support/logfiles')
-
   describe Config do
     before :each do
       support_dir = File.join(File.dirname(__FILE__), '..', 'support/')
@@ -19,8 +17,11 @@ module VpsbClient
     end
 
     it 'understands []' do
-      expect{@config.fetch('vpsb_hostname')}.to_not raise_error
+      expect{@config['vpsb_hostname']}.to_not raise_error
     end
 
+    it 'fetch_optional does not raise exception for missing param' do
+      expect{@config.fetch_optional('missing')}.to_not raise_error
+    end
   end
 end

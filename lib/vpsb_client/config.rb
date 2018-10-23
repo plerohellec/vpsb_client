@@ -11,6 +11,11 @@ module VpsbClient
       default ? @yml.fetch(name.to_s, default) : @yml.fetch(name.to_s)
     end
 
+    def fetch_optional(name)
+      return nil unless @yml.key?(name)
+      @yml.fetch(name)
+    end
+
     def [](name)
       fetch(name.to_s)
     end

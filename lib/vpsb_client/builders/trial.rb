@@ -21,7 +21,7 @@ module VpsbClient
         trial_params[:application_id] = @application_id if @application_id
         trial_params[:plan_id] = @plan_id if @plan_id
 
-        trial_params[:comment] = @config['comment']
+        trial_params[:comment] = @config.fetch_optional('comment')
 
         cpuinfo_parser = Builders::CpuinfoParser.new
         cpuinfo_parser.parse
@@ -46,6 +46,9 @@ module VpsbClient
         trial_params[:rails_version] = defined?(Rails) ? Rails.version : nil
 
         trial_params[:datacenter] = @config['datacenter']
+
+        trial_params[:provision_seconds] = @config.fetch_optional('provision_seconds')
+        trial_params[:postgresql_version] = @config.fetch_optional('postgresql_version')
 
         trial_params
       end
