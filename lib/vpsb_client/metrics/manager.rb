@@ -15,8 +15,9 @@ module VpsbClient
       end
 
       def run
-        if @interval_config.min_end_time > Time.now
-          VpsbClient.logger.info "Skipping #{@interval_config.length} because too early (min_end_time=#{@interval_config.min_end_time})"
+        now = Time.now
+        if @interval_config.min_end_time > now
+          VpsbClient.logger.info "Skipping #{@interval_config.length} because too early (min_end_time=#{@interval_config.min_end_time} now=#{now})"
           return
         end
 

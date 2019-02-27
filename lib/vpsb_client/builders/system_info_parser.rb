@@ -48,7 +48,7 @@ module VpsbClient
           @used = matches[:used].to_i
           @free = matches[:avail].to_i
         else
-          raise NoMatchError, "No regex matches 'free' output"     
+          raise NoMatchError, "No regex matches 'free' output"
         end
         matches = find_matches!(REGEX_TOTAL)
         @total = matches[:total].to_i
@@ -56,9 +56,9 @@ module VpsbClient
     end
 
     class UnameParser < SystemInfoParser
-      attr_reader :kernel, :os_type
+      attr_reader :kernel
       # Linux lino 3.12.6-x86_64-linode36 #2 SMP Mon Jan 13 18:54:10 EST 2014 x86_64 x86_64 x86_64 GNU/Linux
-      REGEX = Regexp.new(/\w+ \S+ (?<kernel>\d+\.\d+\.\d+)-(?<type>[^\-\s]+)[\-\s]/)
+      REGEX = Regexp.new(/\w+ \S+ (?<kernel>\d+\.\d+\.\d+)-?(?<type>[^\-\s]+)?[\-\s]/)
 
       def initialize
         super('uname -a')
@@ -67,7 +67,6 @@ module VpsbClient
       def parse
         matches = find_matches!(REGEX)
         @kernel  = matches[:kernel]
-        @os_type = matches[:type]
       end
     end
 
