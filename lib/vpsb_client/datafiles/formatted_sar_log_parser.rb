@@ -31,7 +31,8 @@ module VpsbClient
                     :custom_options => { :ranges => PXX_RANGES, :pxx_keys => [ 75, 95, 99 ] }
 
       def time
-        Time.at(self.timestamp.to_i)
+        # -2 because sar record timestamps are at hh:mm:01 and represent end of interval
+        Time.at(self.timestamp.to_i) - 2
       end
     end
   end
