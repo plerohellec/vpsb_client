@@ -305,6 +305,102 @@ module VpsbClient
         end
       end
 
+      describe 'WebRuns' do
+        before :each do
+          @trial_id = 1
+          @params = { }
+        end
+
+        describe GetWebRunLastMetric do
+          it 'gets the last web metric for the specified web run' do
+            @web_run_id = 6
+            @params[:trial_id] = @trial_id
+            @params[:web_run_id] = @web_run_id
+
+            expect(@curl).to receive(:get).
+              with("http://localhost/api/trials/#{@trial_id}/web_runs/#{@web_run_id}/last_metric", {}).once
+
+            req = GetWebRunLastMetric.new(@client, @params)
+            req.run
+          end
+        end
+
+        describe GetWebRunMissingTypes do
+          it 'gets the list of web run types that still need to run' do
+            @params = { trial_id: @trial_id }
+            expect(@curl).to receive(:get)
+                          .with("http://localhost/api/trials/#{@trial_id}/web_runs/missing_types", {})
+                          .once
+
+            req = GetWebRunMissingTypes.new(@client, @params)
+            req.run
+          end
+        end
+
+        describe CreateWebRun do
+          it 'posts to /api/trials/:trial_id/web_runs' do
+            @web_run_type_id = 5
+            @params[:web_run_type_id] = @web_run_type_id
+            expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/web_runs",
+                    @params.to_json,
+                    "application/json").once
+
+            req = CreateWebRun.new(@client, @trial_id, @web_run_type_id)
+            req.run
+          end
+        end
+
+        describe AppendWebRunMetrics do
+          it 'posts new web metrics into the specified web run' do
+            @web_run_id = 6
+            @metrics = { web_metrics: [
+              { started_at: Time.now, duration_seconds: 3600, num_requests: 77, metrics: { resptime_total_ms: 44 } }
+            ]}
+            expect(@curl).to receive(:post).
+              with("http://localhost/api/trials/#{@trial_id}/web_runs/#{@web_run_id}/append_metrics",
+                @metrics.to_json, "application/json").
+              once
+
+            req = AppendWebRunMetrics.new(@client, @trial_id, @web_run_id, @metrics)
+            req.run
+          end
+        end
+
+        describe CreateEnduranceMetric do
+          it 'posts to /api/trials/:trial_id/endurance_runs/:run_id/metric' do
+            @endurance_run_id = 2
+
+            run_params = {
+              ended_at: Time.now,
+              num_iterations: 5,
+              duration_seconds: 60,
+              cpu_idle: 0.4,
+              cpu_system: 0.01,
+              cpu_steal: 0.1,
+              cpu_iowait: 0.05,
+            }
+
+            expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/endurance_runs/#{@endurance_run_id}/metric",
+                    run_params.to_json,
+                    "application/json").once
+
+            req = CreateEnduranceMetric.new(@client, @trial_id, @endurance_run_id, run_params)
+            req.run
+          end
+        end
+
+        describe CloseWebRun do
+          it 'puts to /api/trials/:id/web_runs/:run_id/close' do
+            @web_run_id = 2
+
+            expect(@curl).to receive(:put).
+              with("http://localhost/api/trials/#{@trial_id}/web_runs/#{@web_run_id}/close", {}.to_json, "application/json").once
+
+            req = CloseWebRun.new(@client, @trial_id, @web_run_id)
+            req.run
+          end
+        end
+      end
     end
   end
 end
