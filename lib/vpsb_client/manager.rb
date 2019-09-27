@@ -105,6 +105,38 @@ module VpsbClient
       Api::GetTrialSysbenchTests.tests(http_response)
     end
 
+    def web_run_missing_types(trial_id)
+      missing_types_request = Api::GetWebRunMissingTypes.new(@http_client, { trial_id: trial_id })
+      curl_response = missing_types_request.run
+      http_response = Api::Response(curl_response)
+      Api::GetWebRunMissingTypes.tests(http_response)
+    end
+
+    def create_web_run(trial_id, web_run_type_id)
+      create_web_run_request = Api::CreateWebRun.new(@http_client, { trial_id: trial_id, web_run_type_id: web_run_type_id })
+      curl_response = create_web_run_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
+    def close_web_run(trial_id, web_run_id, response_counts)
+      close_web_run_request = Api::CloseWebRun.new(@http_client, { trial_id: trial_id, web_run_id: web_run_id, response_counts: response_counts })
+      curl_response = close_web_run_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
+    def web_run_last_metric(trial_id, web_run_id)
+      last_metric_request = Api::GetWebRunLastMetric.new(@http_client, { trial_id: trial_id, web_run_id: web_run_id })
+      curl_response = last_metric_request.run
+      http_response = Api::Response.new(curl_response)
+      Api::GetTrialLastMetricRequest.metric(http_response)
+    end
+
+    def append_web_run_metrics(trial_id, web_run_id, metrics)
+      append_request = Api::AppendWebRunMetrics.new(@http_client, { trial_id: trial_id, web_run_id: web_run_id, metrics: metrics })
+      curl_response = append_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
     def hoster_id
       return @hoster_id if @hoster_id
       id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', @config['hoster_name'])

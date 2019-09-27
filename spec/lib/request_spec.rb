@@ -345,7 +345,7 @@ module VpsbClient
                     @params.to_json,
                     "application/json").once
 
-            req = CreateWebRun.new(@client, @trial_id, @web_run_type_id)
+            req = CreateWebRun.new(@client, trial_id: @trial_id, web_run_type_id: @web_run_type_id)
             req.run
           end
         end
@@ -392,11 +392,13 @@ module VpsbClient
         describe CloseWebRun do
           it 'puts to /api/trials/:id/web_runs/:run_id/close' do
             @web_run_id = 2
+            @response_counts = { 'error' => 11, 'not_found' => 3, 'success' => 2, 'rate_limited' => 34 }
 
             expect(@curl).to receive(:put).
-              with("http://localhost/api/trials/#{@trial_id}/web_runs/#{@web_run_id}/close", {}.to_json, "application/json").once
+              with("http://localhost/api/trials/#{@trial_id}/web_runs/#{@web_run_id}/close",
+                   {response_counts: @response_counts}.to_json, "application/json").once
 
-            req = CloseWebRun.new(@client, @trial_id, @web_run_id)
+            req = CloseWebRun.new(@client, trial_id: @trial_id, web_run_id: @web_run_id, response_counts: @response_counts)
             req.run
           end
         end

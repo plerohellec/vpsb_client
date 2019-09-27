@@ -42,7 +42,15 @@ module VpsbClient
         post_params # but curl does the www form encoding
       end
     end
-    alias_method :put_params, :post_params
+
+    def put_params(request, content_type)
+      put_params = request.put_params
+      if request.content_type == 'application/json'
+        JSON.generate(put_params) # curl doesn't do the json encoding by itself
+      else
+        put_params # but curl does the www form encoding
+      end
+    end
 
     def url_encode(params)
       return '' if params.empty?
