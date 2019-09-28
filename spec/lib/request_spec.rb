@@ -353,15 +353,15 @@ module VpsbClient
         describe AppendWebRunMetrics do
           it 'posts new web metrics into the specified web run' do
             @web_run_id = 6
-            @metrics = { web_metrics: [
+            @metrics = [
               { started_at: Time.now, duration_seconds: 3600, num_requests: 77, metrics: { resptime_total_ms: 44 } }
-            ]}
+            ]
             expect(@curl).to receive(:post).
               with("http://localhost/api/trials/#{@trial_id}/web_runs/#{@web_run_id}/append_metrics",
-                @metrics.to_json, "application/json").
+                   { web_metrics: @metrics }.to_json, "application/json").
               once
 
-            req = AppendWebRunMetrics.new(@client, @trial_id, @web_run_id, @metrics)
+            req = AppendWebRunMetrics.new(@client, { trial_id: @trial_id, web_run_id: @web_run_id, metrics: @metrics })
             req.run
           end
         end

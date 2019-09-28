@@ -108,7 +108,7 @@ module VpsbClient
     def web_run_missing_types(trial_id)
       missing_types_request = Api::GetWebRunMissingTypes.new(@http_client, { trial_id: trial_id })
       curl_response = missing_types_request.run
-      http_response = Api::Response(curl_response)
+      http_response = Api::Response.new(curl_response)
       Api::GetWebRunMissingTypes.tests(http_response)
     end
 
