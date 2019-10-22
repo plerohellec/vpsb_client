@@ -137,6 +137,13 @@ module VpsbClient
       http_response = Api::Response.new(curl_response)
     end
 
+    def web_run_urls(dataset)
+      urls_request = Api::GetWebRunUrls.new(@http_client, { dataset: dataset })
+      curl_response = urls_request.run
+      http_response = Api::Response.new(curl_response)
+      Api::GetWebRunUrls.urls(http_response)
+    end
+
     def hoster_id
       return @hoster_id if @hoster_id
       id_request = Api::GetItemIdRequest.new(@http_client, 'hosters', @config['hoster_name'])
