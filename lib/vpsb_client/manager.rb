@@ -210,13 +210,13 @@ module VpsbClient
       http_response
     end
 
-    def start_old_web_test(trial)
+    def start_old_web_test(trial_id)
       unless enabled?
         logger.debug "[vpsb] not running because vpsb_client is disabled"
         return
       end
 
-      start_request = Api::StartOldWebTest.new(@http_client, trial['id'])
+      start_request = Api::StartOldWebTest.new(@http_client, trial_id)
       http_response = Api::Response.new(start_request.run)
       logger.debug "[vpsb] start old web test request response code = #{http_response.code}"
       http_response

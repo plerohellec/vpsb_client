@@ -15,6 +15,5 @@ end
 trial_id = trial['id']
 puts "trial_id=#{trial_id}"
 
-trial = manager.current_trial
-ap manager.start_old_web_test(trial)
+ap manager.start_old_web_test(trial_id)
 
