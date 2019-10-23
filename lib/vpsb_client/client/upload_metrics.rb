@@ -24,7 +24,13 @@ module VpsbClient
           start_time = last_started_at + interval_length
           force = true
         else
-          trial_started_at = DateTime.parse(trial['started_at']).to_time
+          old_web_started_at = trial['old_web_started_at']
+          if old_web_started_at
+            trial_started_at = DateTime.parse(old_web_started_at).to_time
+          else
+            logger.warn "trial['old_web_started_at'] not found, using started_at"
+            trial_started_at = DateTime.parse(trial['started_at']).to_time
+          end
           start_time = trial_started_at
           force = false
         end
