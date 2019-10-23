@@ -39,8 +39,8 @@ module VpsbClient
       @signed_in = true
     end
 
-    def create_trial
-      unless enabled?
+    def create_trial(force = false)
+      unless enabled? || force
         VpsbClient.logger.debug "not running because vpsb_client is disabled"
         return
       end
