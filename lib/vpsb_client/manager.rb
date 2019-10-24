@@ -22,6 +22,10 @@ module VpsbClient
       @http_client = HttpClient.new(@curl_wrapper, @config['vpsb_protocol'], @config['vpsb_hostname'])
     end
 
+    def reload_config
+      @config.reload
+    end
+
     def enabled?
       @config.fetch(:enabled, false)
     end
