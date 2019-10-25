@@ -190,12 +190,14 @@ module VpsbClient
       last_started_at = trial_last_metric_started_at(trial['id'], interval_length)
       if last_started_at
         start_time = last_started_at + interval_length
+        real_length = interval_length
       else
         logger.debug "[vpsb] close_trial - no last metric found"
-        start_time = Time.now - interval_length
+        start_time = trial['old_web_started_at'] || trial['started_at']
+        real_length = Time.now - start_time
       end
-      logger.debug "[vpsb] close_trial - length=#{interval_length} start_time=#{start_time} force=false"
-      interval_config = Metrics::IntervalConfig.new(start_time, interval_length, force: true)
+      logger.debug "[vpsb] close_trial - length=#{real_length} start_time=#{start_time} force=false"
+      interval_config = Metrics::IntervalConfig.new(start_time, real_length, force: true)
       metrics_manager = metrics_manager(trial['id'], interval_config)
       metrics_manager.run
       metric_ids += metrics_manager.created_metric_ids
