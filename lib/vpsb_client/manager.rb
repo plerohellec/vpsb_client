@@ -194,6 +194,7 @@ module VpsbClient
       else
         logger.debug "[vpsb] close_trial - no last metric found"
         start_time = trial['old_web_started_at'] || trial['started_at']
+        start_time = DateTime.parse(start_time).to_time
         real_length = Time.now - start_time
       end
       logger.debug "[vpsb] close_trial - length=#{real_length} start_time=#{start_time} force=false"

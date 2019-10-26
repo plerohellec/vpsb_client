@@ -40,7 +40,7 @@ module VpsbClient
           timing_enum = timing_builder.each_interval
           while(timing_interval = timing_enum.next) do
             while(sar_interval = sar_enum.next) do
-              break if sar_interval.start_time == timing_interval.start_time
+              break if (sar_interval.start_time - timing_interval.start_time).abs < @interval_length
               raise "sar_interval older than timing_interval: #{sar_interval.start_time} > #{timing_interval.start_time}" if sar_interval.start_time > timing_interval.start_time
             end
 
