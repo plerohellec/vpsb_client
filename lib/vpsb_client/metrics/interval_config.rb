@@ -21,7 +21,7 @@ module VpsbClient
         if @force
           @start_time
         elsif aligned?
-          lower_boundary_time(@start_time)
+          upper_boundary_time(@start_time)
         else
           @start_time
         end
@@ -39,6 +39,10 @@ module VpsbClient
 
       def lower_boundary_time(t)
         Time.at((t.to_i / @interval_length.to_i) * @interval_length.to_i)
+      end
+
+      def upper_boundary_time(t)
+        lower_boundary_time(t) + @interval_length.to_i
       end
     end
   end
