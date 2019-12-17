@@ -35,11 +35,16 @@ module VpsbClient
 
         memory_parser = Builders::MemoryParser.new
         memory_parser.parse
+        trial_params[:total_memory_mb] = memory_parser.total
         trial_params[:free_memory_mb] = memory_parser.free
 
         uname_parser = Builders::UnameParser.new
         uname_parser.parse
         trial_params[:kernel] = uname_parser.kernel
+
+        df_parser = Builders::DfParser.new
+        df_parser.parse
+        trial_params[:root_disk_space_gb] = df_parser.root_disk_space_gb
 
         trial_params[:client_hostname] = @config['client_hostname']
         trial_params[:ruby_version] = RUBY_VERSION

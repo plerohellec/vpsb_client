@@ -122,5 +122,20 @@ module VpsbClient
         @os = matches[:os]
       end
     end
+
+    class DfParser < SystemInfoParser
+      attr_reader :root_disk_space_gb
+
+      REGEX = '^\S+\s+(?<gb>\d+)G\s'
+
+      def initialize
+        super('df -h /')
+      end
+
+      def parse
+        matches = find_matches!(REGEX)
+        @root_disk_space_gb = matches[:gb].to_i
+      end
+    end
   end
 end

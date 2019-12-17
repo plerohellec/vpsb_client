@@ -46,5 +46,14 @@ module VpsbClient
         expect(mp.os.size).to be > 0
       end
     end
+
+    describe DfParser do
+      it 'finds root disk space' do
+        df = DfParser.new
+        df.parse
+        expect(df.root_disk_space_gb).to be_an_instance_of(Integer)
+        expect(df.root_disk_space_gb).to be > 0
+      end
+    end
   end
 end
