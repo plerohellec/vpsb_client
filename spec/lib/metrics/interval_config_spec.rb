@@ -71,7 +71,7 @@ module VpsbClient
           end
 
           it 'min_start_time is lower aligned boundary of fallback_start_time' do
-            expect(@ic.min_start_time).to eq(lower_time_boundary(@fallback_start_time, @length))
+            expect(@ic.min_start_time).to eq(upper_time_boundary(@fallback_start_time, @length))
           end
         end
 
@@ -93,6 +93,10 @@ module VpsbClient
 
       def lower_time_boundary(t, len)
         Time.at((t.to_i / len) * len)
+      end
+
+      def upper_time_boundary(t, len)
+        lower_time_boundary(t, len) + len
       end
     end
   end
