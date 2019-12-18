@@ -10,3 +10,4 @@ timing_path: /theapp/log
 client_hostname: test-001
 datacenter: Sim City
 enabled: true
+vps_instance_id: 1
