@@ -11,3 +11,4 @@ client_hostname: test-001
 datacenter: Sim City
 enabled: true
 vps_instance_id: 1
+private: true
