@@ -36,7 +36,7 @@ module VpsbClient
       REGEX_TOTAL = '^Mem:\s+(?<total>\d+)'
 
       def initialize
-        super('free')
+        super('free -m')
       end
 
       def parse
