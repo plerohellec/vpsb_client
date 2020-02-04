@@ -29,6 +29,8 @@ module VpsbClient
         trial_params[:cpu_type] = cpuinfo_parser.model
         trial_params[:num_cores] = cpuinfo_parser.num
         trial_params[:cpu_mhz] = cpuinfo_parser.mhz
+        trial_params[:hyperthreaded] = cpuinfo_parser.hyperthreaded
+        trial_params[:cache_size_kb] = cpuinfo_parser.cache_size_kb
 
         issue_parser = Builders::IssueParser.new
         issue_parser.parse

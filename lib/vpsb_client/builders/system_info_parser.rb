@@ -71,7 +71,7 @@ module VpsbClient
     end
 
     class CpuinfoParser < SystemInfoParser
-      attr_reader :model, :num, :mhz
+      attr_reader :model, :num, :mhz, :hyperthreaded, :cache_size_kb
       # model name  : Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz
       REGEX = Regexp.new('^model name\s*:\s*(?<model>.*$)')
       REGEX_PROCESSOR = Regexp.new('^Processor\s*:\s*(?<model>.*$)')
@@ -86,9 +86,12 @@ module VpsbClient
         @model = matches[:model]
         parse_num_processors
         parse_cpu_speed
+        parse_hyperthreading
+        parse_cache_size
       end
 
       private
+
       def parse_num_processors
         @num = 0
         lines.each do |line|
@@ -104,6 +107,28 @@ module VpsbClient
           @mhz = matches[:mhz].to_i
         else
           @mhz = nil
+        end
+      end
+
+      def parse_hyperthreading
+        @num_siblings = 0
+        @num_cores = 0
+        lines.each do |line|
+          if match = /^siblings\s*:\s*(?<num>\d+)/.match(line)
+            @num_siblings += match[:num].to_i
+          elsif match = /^cpu cores\s*:\s*(?<num>\d+)/.match(line)
+            @num_cores += match[:num].to_i
+          end
+        end
+        @hyperthreaded = @num_siblings > @num_cores
+      end
+
+      def parse_cache_size
+        matches = find_matches(/^cache size\s*:\s*(?<size>\d+)\s*KB/)
+        if matches
+          @cache_size_kb = matches[:size].to_i
+        else
+          @cache_size_kb = nil
         end
       end
     end

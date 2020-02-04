@@ -1,7 +1,7 @@
 module VpsbClient
   module Api
     class CreateTrialRequest < PostRequest
-      MANDATORY_PARAM_NAMES = [ :started_at, :hoster_id, :application_id, :plan_id, :os, :total_memory_mb, :free_memory_mb, :cpu_type, :num_cores, :kernel, :client_hostname, :ruby_version, :rails_version, :datacenter, :cpu_mhz, :root_disk_space_gb]
+      MANDATORY_PARAM_NAMES = [ :started_at, :hoster_id, :application_id, :plan_id, :os, :total_memory_mb, :free_memory_mb, :cpu_type, :num_cores, :kernel, :client_hostname, :ruby_version, :rails_version, :datacenter, :cpu_mhz, :root_disk_space_gb, :hyperthreaded, :cache_size_kb]
       OPTIONAL_PARAM_NAMES = [ :comment, :provision_seconds, :postgresql_version, :vps_instance_id, :private ]
 
       def initialize(http_client, trial)
