@@ -59,6 +59,8 @@ module VpsbClient
         trial_params[:postgresql_version] = @config.fetch_optional('postgresql_version')
         trial_params[:private] = @config.fetch_optional('private')
 
+        trial_params[:expected_tests] = @config.fetch('expected_tests')
+
         trial_params
       end
     end

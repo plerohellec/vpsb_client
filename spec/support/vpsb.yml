@@ -12,3 +12,5 @@ datacenter: Sim City
 enabled: true
 vps_instance_id: 1
 private: true
+expected_tests: "web_runs,transfers,sysbench,endurance"
+
