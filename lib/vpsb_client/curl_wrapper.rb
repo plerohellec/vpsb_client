@@ -2,8 +2,8 @@ require 'curb'
 
 module VpsbClient
   class CurlWrapper
-    CONNECT_TIMEOUT = 5
-    TIMEOUT = 5
+    CONNECT_TIMEOUT = 10
+    TIMEOUT = 10
 
     def initialize(auth_token)
       @auth_token = auth_token
