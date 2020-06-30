@@ -21,7 +21,6 @@ module VpsbClient
         trial_params[:application_id] = @application_id if @application_id
         trial_params[:plan_id] = @plan_id if @plan_id
 
-        trial_params[:comment] = @config.fetch_optional('comment')
         trial_params[:vps_instance_id] = @config.fetch_optional('vps_instance_id')
 
         cpuinfo_parser = Builders::CpuinfoParser.new

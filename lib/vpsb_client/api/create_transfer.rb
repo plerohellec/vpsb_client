@@ -2,7 +2,7 @@ module VpsbClient
   module Api
     class CreateTransfer < PostRequest
 
-      def initialize(http_client, trial_id, server, latency_ms, download_size_bytes, download_duration_ms, upload_size_bytes, upload_duration_ms)
+      def initialize(http_client, trial_id, server, latency_ms, download_size_bytes, download_duration_ms, upload_size_bytes, upload_duration_ms, version)
         super(http_client)
         @trial_id = trial_id
         @server = server
@@ -11,6 +11,7 @@ module VpsbClient
         @download_duration_ms = download_duration_ms
         @upload_size_bytes = upload_size_bytes
         @upload_duration_ms = upload_duration_ms
+        @version = version
       end
 
       def url_path
@@ -25,7 +26,8 @@ module VpsbClient
             download_size_bytes: @download_size_bytes,
             download_duration_ms: @download_duration_ms,
             upload_size_bytes: @upload_size_bytes,
-            upload_duration_ms: @upload_duration_ms
+            upload_duration_ms: @upload_duration_ms,
+            version: @version
           }
         }
       end

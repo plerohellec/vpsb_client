@@ -80,9 +80,10 @@ module VpsbClient
       http_response = Api::Response.new(curl_response)
     end
 
-    def create_transfer(trial_id, server, latency_ms, download_size_bytes, download_duration_ms, upload_size_bytes, upload_duration_ms)
+    def create_transfer(trial_id, server, latency_ms, download_size_bytes, download_duration_ms, upload_size_bytes, upload_duration_msi, version)
       create_transfer_request = Api::CreateTransfer.new(@http_client, trial_id, server, latency_ms,
-                                                        download_size_bytes, download_duration_ms, upload_size_bytes, upload_duration_ms)
+                                                        download_size_bytes, download_duration_ms, upload_size_bytes,
+                                                        upload_duration_ms, version)
       curl_response = create_transfer_request.run
       http_response = Api::Response.new(curl_response)
     end

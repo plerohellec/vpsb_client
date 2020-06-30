@@ -282,7 +282,8 @@ module VpsbClient
               download_size_bytes: 10000,
               download_duration_ms: 20000,
               upload_size_bytes: 5000,
-              upload_duration_ms: 3000
+              upload_duration_ms: 3000,
+              version: 'httparty'
             }
           }
           expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/transfers",
@@ -291,7 +292,8 @@ module VpsbClient
 
           vals = transfer_params[:transfer]
           req = CreateTransfer.new(@client, @trial_id, vals[:server], vals[:latency_ms], vals[:download_size_bytes],
-                                  vals[:download_duration_ms], vals[:upload_size_bytes], vals[:upload_duration_ms])
+                                  vals[:download_duration_ms], vals[:upload_size_bytes], vals[:upload_duration_ms],
+                                  vals[:version])
           req.run
         end
       end
