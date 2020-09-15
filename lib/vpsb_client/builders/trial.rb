@@ -24,7 +24,12 @@ module VpsbClient
         trial_params[:vps_instance_id] = @config.fetch_optional('vps_instance_id')
 
         cpuinfo_parser = Builders::CpuinfoParser.new
-        cpuinfo_parser.parse
+        begin
+          cpuinfo_parser.parse
+        rescue Builders::SystemInfoParser::NoMatchError => e
+          cpuinfo_parser = Builders::LscpuInfoParser.new
+          cpuinfo_parser.parse
+        end
         trial_params[:cpu_type] = cpuinfo_parser.model
         trial_params[:num_cores] = cpuinfo_parser.num
         trial_params[:cpu_mhz] = cpuinfo_parser.mhz

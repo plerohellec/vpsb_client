@@ -133,6 +133,74 @@ module VpsbClient
       end
     end
 
+    class LscpuinfoParser < SystemInfoParser
+      attr_reader :model, :num, :mhz, :hyperthreaded, :cache_size_kb
+      # model name  : Intel(R) Xeon(R) CPU E5-2670 0 @ 2.60GHz
+      REGEX = Regexp.new('^model name\s*:\s*(?<model>.*$)')
+      REGEX_PROCESSOR = Regexp.new('^Processor\s*:\s*(?<model>.*$)')
+
+      def initialize
+        super('lscpu')
+      end
+
+      def parse
+        parse_model
+        parse_num_processors
+        parse_cpu_speed
+        parse_hyperthreading
+        parse_cache_size
+        true
+      end
+
+      private
+
+      def parse_model
+        @model = 'unknown'
+        lines.each do |line|
+          if matches = /^Model name:\s*(?<model>.+$)/.match(line)
+            @model = matches[:model]
+          end
+        end
+      end
+
+      def parse_num_processors
+        @num = 0
+        lines.each do |line|
+          if matches = /^CPU\(s\)*:\s*(?<num>\d+)/.match(line)
+            @num = matches[:num].to_i
+          end
+        end
+      end
+
+      def parse_cpu_speed
+        @mhz = -1
+        lines.each do |line|
+          if matches = /^CPU MHz:\s*(?<mhz>.+$)/.match(line)
+            @mhz = matches[:mhz].to_i
+          end
+        end
+      end
+
+      def parse_hyperthreading
+        @hyperthreaded = false
+        lines.each do |line|
+          if matches = /^Thread\(s\) per core:\s*(?<threads>\d+$)/.match(line)
+            @hyperthreaded = matches[:threads].to_i > 1
+          end
+        end
+      end
+
+      def parse_cache_size
+        @cache_size_kb = 'unknown'
+        lines.each do |line|
+          if matches = /^L3 cache:\s*(?<size>\d+)\s*MiB$/.match(line)
+            @cache_size_kb = matches[:size].to_i * 1000
+          end
+        end
+      end
+
+    end
+
     class IssueParser < SystemInfoParser
       attr_reader :os
 
