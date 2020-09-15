@@ -27,7 +27,7 @@ module VpsbClient
         begin
           cpuinfo_parser.parse
         rescue Builders::SystemInfoParser::NoMatchError => e
-          cpuinfo_parser = Builders::LscpuInfoParser.new
+          cpuinfo_parser = Builders::LscpuinfoParser.new
           cpuinfo_parser.parse
         end
         trial_params[:cpu_type] = cpuinfo_parser.model
