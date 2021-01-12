@@ -185,7 +185,7 @@ module VpsbClient
         @hyperthreaded = false
         lines.each do |line|
           if matches = /^Thread\(s\) per core:\s*(?<threads>\d+$)/.match(line)
-            @hyperthreaded = matches[:threads].to_i > 1
+            @hyperthreaded = (matches[:threads].to_i > 1)
           end
         end
       end
@@ -219,15 +219,15 @@ module VpsbClient
     class DfParser < SystemInfoParser
       attr_reader :root_disk_space_gb
 
-      REGEX = '^\S+\s+(?<gb>\d+)G\s'
+      REGEX = '^\S+\s+(?<kb>\d+)\s'
 
       def initialize
-        super('df -h /')
+        super('df -k /')
       end
 
       def parse
         matches = find_matches!(REGEX)
-        @root_disk_space_gb = matches[:gb].to_i
+        @root_disk_space_gb = matches[:kb].to_i / 1024 / 1024
       end
     end
   end
