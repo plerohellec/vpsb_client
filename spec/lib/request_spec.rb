@@ -405,6 +405,17 @@ module VpsbClient
           end
         end
       end
+
+      describe 'SpeedtestServers' do
+        it 'get list of speedtest servers' do
+          expect(@curl).to receive(:get)
+                        .with("http://localhost/api/speedtest_servers", {})
+                        .once
+
+          req = GetSpeedtestServers.new(@client)
+          req.run
+        end
+      end
     end
   end
 end

@@ -13,7 +13,7 @@ module VpsbClient
     end
 
     it 'raises an exception for non existent keys' do
-      expect{@config.fetch('foobar')}.to raise_error
+      expect{@config.fetch('foobar')}.to raise_error(KeyError)
     end
 
     it 'understands []' do
