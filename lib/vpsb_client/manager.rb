@@ -243,6 +243,12 @@ module VpsbClient
       Api::GetSpeedtestServers.servers(http_response)
     end
 
+    def get_speedtest_servers_by_region
+      request = Api::GetSpeedtestServers.new(@http_client)
+      http_response = Api::Response.new(request.run)
+      Api::GetSpeedtestServers.servers_by_region(http_response)
+    end
+
     private
 
     def prepare_logfiles
