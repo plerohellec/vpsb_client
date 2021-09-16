@@ -10,7 +10,7 @@ module VpsbClient
       end
 
       def url_path
-        "/api/speedtest_server"
+        "/api/speedtest_servers"
       end
 
       def post_params

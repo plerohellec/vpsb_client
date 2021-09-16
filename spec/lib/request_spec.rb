@@ -417,14 +417,15 @@ module VpsbClient
         end
 
         it 'posts to /api/speedtest_servers' do
-          @params[:host] = @host = 'speedtest.exanmple.com'
+          @params = {}
+          @params[:hostname] = @hostname = 'speedtest.exanmple.com'
           @params[:port] = @port = 8080
           @params[:event] = @event = 'failure'
           expect(@curl).to receive(:post).with("http://localhost/api/speedtest_servers",
                   @params.to_json,
                   "application/json").once
 
-          req = CreateSpeedtestServer.new(@client, host: @host, port: @port, event: @event)
+          req = CreateSpeedtestServer.new(@client, hostname: @hostname, port: @port, event: @event)
           req.run
         end
       end

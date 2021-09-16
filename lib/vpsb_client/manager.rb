@@ -249,8 +249,8 @@ module VpsbClient
       Api::GetSpeedtestServers.servers_by_region(http_response)
     end
 
-    def create_speedtest_server(host, port, event)
-      create_speedtest_server_request = Api::CreateSpeedtestServer.new(@http_client, { host: host, port: port, event: event })
+    def create_speedtest_server(hostname, port, event)
+      create_speedtest_server_request = Api::CreateSpeedtestServer.new(@http_client, { hostname: hostname, port: port, event: event })
       curl_response = create_speedtest_server_request.run
       http_response = Api::Response.new(curl_response)
     end
