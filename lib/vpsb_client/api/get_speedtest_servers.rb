@@ -1,12 +1,17 @@
 module VpsbClient
   module Api
     class GetSpeedtestServers < GetRequest
-      def initialize(http_client)
+      def initialize(http_client, params={})
         super(http_client)
+        @trial_id = params[:trial_id]
       end
 
       def url_path
         "/api/speedtest_servers"
+      end
+
+      def query_params
+        @trial_id ? { trial_id: @trial_id } : {}
       end
 
       def self.servers_by_region(http_response)
