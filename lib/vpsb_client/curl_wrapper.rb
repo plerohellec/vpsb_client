@@ -4,6 +4,7 @@ module VpsbClient
   class CurlWrapper
     CONNECT_TIMEOUT = 10
     TIMEOUT = 10
+    USER_AGENT = "vpsb_client"
 
     def initialize(auth_token)
       @auth_token = auth_token
@@ -16,6 +17,7 @@ module VpsbClient
         curl.timeout = TIMEOUT
         curl.connect_timeout = CONNECT_TIMEOUT
         curl.headers['Authorization'] = "Token #{@auth_token}"
+        curl.headers['User-Agent'] = USER_AGENT
 
         yield curl if block_given?
       end
@@ -29,6 +31,7 @@ module VpsbClient
         curl.connect_timeout = CONNECT_TIMEOUT
         curl.headers['content-type'] = content_type
         curl.headers['Authorization'] = "Token #{@auth_token}"
+        curl.headers['User-Agent'] = USER_AGENT
 
         yield curl if block_given?
       end
@@ -42,6 +45,7 @@ module VpsbClient
         curl.connect_timeout = CONNECT_TIMEOUT
         curl.headers['content-type'] = content_type
         curl.headers['Authorization'] = "Token #{@auth_token}"
+        curl.headers['User-Agent'] = USER_AGENT
 
         yield curl if block_given?
       end

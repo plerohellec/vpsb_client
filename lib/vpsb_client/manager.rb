@@ -88,6 +88,12 @@ module VpsbClient
       http_response = Api::Response.new(curl_response)
     end
 
+    def create_yab(trial_id, yabs_out)
+      create_yab_request = Api::CreateYab.new(@http_client, trial_id, yabs_out)
+      curl_response = create_yab_request.run
+      http_response = Api::Response.new(curl_response)
+    end
+
     def current_trial
       builder = Builders::Trial.new(@config)
       current_trial_request = Api::GetCurrentTrialRequest.new(@http_client, builder.lookup_params)
