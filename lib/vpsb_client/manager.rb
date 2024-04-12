@@ -62,8 +62,8 @@ module VpsbClient
       http_response = Api::Response.new(curl_response)
     end
 
-    def create_endurance_run(trial_id, num_processors)
-      create_endurance_run_request = Api::CreateEnduranceRun.new(@http_client, trial_id, num_processors)
+    def create_endurance_run(trial_id, num_processors, short_endurance: false)
+      create_endurance_run_request = Api::CreateEnduranceRun.new(@http_client, trial_id, num_processors, short_endurance: short_endurance)
       curl_response = create_endurance_run_request.run
       http_response = Api::Response.new(curl_response)
     end
