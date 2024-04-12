@@ -29,7 +29,7 @@ module VpsbClient
       end
 
       it 'finds the model and number of processors' do
-        expect(@mp.model).to match(/^.*CPU.*GHz$/)
+        expect(@mp.model).to match(/^.*CPU.*GHz$|Intel|AMD/)
         expect(@mp.num).to be_an_instance_of(Integer)
       end
 

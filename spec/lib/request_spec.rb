@@ -99,7 +99,7 @@ module VpsbClient
         end
 
         it 'gets /api/trials/:id/last_metric with length' do
-          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/last_metric', length: 3600).once
+          expect(@curl).to receive(:get).with('http://localhost/api/trials/1/last_metric', {length: 3600}).once
 
           req = GetTrialLastMetricRequest.new(@client, @params)
           req.run
