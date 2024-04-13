@@ -60,7 +60,11 @@ module VpsbClient
         trial_params[:datacenter] = @config['datacenter']
 
         trial_params[:provision_seconds] = @config.fetch_optional('provision_seconds')
-        trial_params[:postgresql_version] = @config.fetch_optional('postgresql_version')
+
+        postgresql_version_parser = Builders::PostgresqlVersionParser.new
+        postgresql_version_parser.parse
+        trial_params[:postgresql_version] = postgresql_version_parser.version
+
         trial_params[:private] = @config.fetch_optional('private')
 
         trial_params[:expected_tests] = @config.fetch('expected_tests')

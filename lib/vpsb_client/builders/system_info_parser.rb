@@ -230,5 +230,19 @@ module VpsbClient
         @root_disk_space_gb = matches[:kb].to_i / 1024 / 1024
       end
     end
+
+    class PostgresqlVersionParser < SystemInfoParser
+      attr_reader :version
+
+      def initialize
+        super("pg_config --version")
+      end
+
+      # PostgreSQL 14.11 (Ubuntu 14.11-1.pgdg22.04+1)
+      def parse
+        matches = find_matches!(/^PostgreSQL\s+(?<version>\d+\.\d+)\s/)
+        @version = matches[:version]
+      end
+    end
   end
 end
