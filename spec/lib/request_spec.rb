@@ -229,7 +229,7 @@ module VpsbClient
         it 'posts to /api/trials/:trial_id/endurance_runs' do
           run_params = {
             num_processors: 3,
-            short_endurance: false
+            duration_key: 'long'
           }
           expect(@curl).to receive(:post).with("http://localhost/api/trials/#{@trial_id}/endurance_runs",
                   run_params.to_json,

@@ -2,11 +2,11 @@ module VpsbClient
   module Api
     class CreateEnduranceRun < PostRequest
 
-      def initialize(http_client, trial_id, num_processors, short_endurance: false)
+      def initialize(http_client, trial_id, num_processors, duration_key: 'long')
         super(http_client)
         @trial_id = trial_id
         @num_processors = num_processors
-        @short_endurance = short_endurance
+        @duration_key = duration_key
       end
 
       def url_path
@@ -16,7 +16,7 @@ module VpsbClient
       def post_params
         @post_params = {
           num_processors: @num_processors,
-          short_endurance: @short_endurance
+          duration_key: @duration_key
         }
       end
 
