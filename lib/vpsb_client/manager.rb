@@ -93,6 +93,11 @@ module VpsbClient
       Api::Response.new(request.run)
     end
 
+    def next_fio_test(trial_id)
+      request = Api::GetNextFioTest.new(@http_client, trial_id)
+      Api::Response.new(request.run).parsed_response.fetch('fio_test')
+    end
+
     def create_yab(trial_id, yabs_out)
       create_yab_request = Api::CreateYab.new(@http_client, trial_id, yabs_out)
       curl_response = create_yab_request.run
