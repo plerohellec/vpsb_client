@@ -32,7 +32,8 @@ This calls `GET /api/fio_tests/next_test?trial_id=123` using a user API token.
 Admins can access any trial. Other users must be linked to the hoster owning
 the trial, and the trial must be private, matching sysbench authorization.
 The response is `{ "fio_test": { ... } }`, or `{ "fio_test": null }` when all
-current definitions have results in the trial. The manager returns the nested
+current definitions have results in the running fio test group (or across the
+trial when no fio group is running). The manager returns the nested
 object or `nil`. Unknown trials return HTTP 404; missing trial ids return HTTP 400.
 
 Each definition includes `test_id` (for example `random_read_4k`), `test_version`,
@@ -43,8 +44,9 @@ the arrays directly without a shell. Run preparation before measurement.
 
 Upload the result, then request the next test again until the manager returns
 `nil`. Failed requests and uploads raise errors, not completion. Results are
-matched by trial, text id, and version, so an interrupted task resumes from the
-first missing result. This is not a work-claim API: run only one fio worker per
+matched by trial, running fio group, text id, and version, so an interrupted task
+resumes from the first missing result and a new group runs its own measurements.
+This is not a work-claim API: run only one fio worker per
 trial to avoid duplicate execution.
 
 ### Upload fio results
